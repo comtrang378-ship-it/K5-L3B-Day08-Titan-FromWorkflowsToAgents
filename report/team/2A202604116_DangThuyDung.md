@@ -52,7 +52,7 @@ Trích `src/reports/benchmark.json` (MockLLM, giá mô phỏng):
 
 - Run id: `R-single-C-001-s11`, `R-single-C-002-s55`. Trial fail duy nhất: `R-swarm-C-002-s55` (`status resolved != denied`).
 - Ma trận student của single: 62/62 test T01–T14 pass (`python -m pytest -q -m student -o addopts= -k single`); T11 (gọi lại) và T12 (crash rồi chạy lại) đều chỉ ra một refund.
-- Code `single.py`: commit `a69f265` (push chung của nhóm). Commit test và báo cáo của tôi: (điền hash sau khi commit).
+- Code `single.py`: commit `a69f265` (push chung của nhóm). Commit test và báo cáo của tôi: `1c33f34`.
 
 ## 5. Công cụ AI đã dùng
 

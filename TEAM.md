@@ -34,7 +34,7 @@ Gợi ý chia vai:
 | Người | Vai | Commit | Test đã thêm hoặc sửa |
 | --- | --- | --- | --- |
 | Nguyễn Anh Tú | Điều phối, workflow, tích hợp | Chờ commit | Cần bổ sung test workflow |
-| Đăng Thùy Dung | Single agent / ReAct, benchmark | Chờ commit | `src/tests/test_single_react.py` (tool chỉ đọc, trần 8 bước, bỏ qua delay trong ticket, trace không lộ secret) |
+| Đăng Thùy Dung | Single agent / ReAct, benchmark | `a69f265` (single.py), `1c33f34` (test, báo cáo) | `src/tests/test_single_react.py` (tool chỉ đọc, trần 8 bước, bỏ qua delay trong ticket, trace không lộ secret) |
 | Trần Thành Vinh | Orchestrator, handoff, trace, crash suite | Chờ commit | Cần bổ sung test orchestrator/handoff |
 
 ## Cá nhân
