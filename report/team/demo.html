@@ -1,0 +1,679 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LogiX-VN — From Workflows to Agents</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #07111f;
+      --panel: #101e30;
+      --panel-2: #14263a;
+      --text: #edf4ff;
+      --muted: #9eb0c8;
+      --line: #2a4059;
+      --cyan: #54dfd0;
+      --blue: #70a9ff;
+      --orange: #ffbd69;
+      --pink: #ff8296;
+      --green: #81e3a8;
+      --radius: 18px;
+      font-family: Inter, "Segoe UI", Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      background:
+        radial-gradient(ellipse at 82% 10%, #123149 0, transparent 38%),
+        radial-gradient(ellipse at 5% 90%, #10213a 0, transparent 36%),
+        var(--bg);
+      color: var(--text);
+    }
+
+    button, a { font: inherit; }
+
+    .deck {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+    }
+
+    .topbar, .bottombar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px clamp(18px, 4vw, 56px);
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .brand {
+      color: var(--text);
+      font-weight: 750;
+      letter-spacing: .04em;
+    }
+
+    .top-meta { display: flex; align-items: center; gap: 12px; }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 6px 11px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .pill::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--cyan);
+    }
+
+    .progress {
+      height: 3px;
+      background: #18283a;
+    }
+
+    .progress > span {
+      display: block;
+      width: 16.666%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--cyan), var(--blue));
+      transition: width .25s ease;
+    }
+
+    main { display: grid; place-items: center; padding: 12px clamp(16px, 4vw, 56px); }
+
+    .slide {
+      display: none;
+      width: min(1200px, 100%);
+      min-height: min(690px, calc(100vh - 116px));
+      padding: clamp(24px, 4vw, 54px);
+      border: 1px solid #263b52;
+      border-radius: 24px;
+      background: linear-gradient(145deg, rgba(16, 30, 48, .97), rgba(9, 20, 34, .97));
+      box-shadow: 0 28px 80px rgba(0, 0, 0, .28);
+      overflow: auto;
+    }
+
+    .slide.active { display: block; animation: appear .24s ease-out; }
+    @keyframes appear { from { opacity: .35; transform: translateY(5px); } to { opacity: 1; transform: none; } }
+
+    .eyebrow {
+      color: var(--cyan);
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      font-size: 12px;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { font-size: clamp(40px, 7vw, 76px); line-height: .98; letter-spacing: -.045em; margin-bottom: 20px; }
+    h2 { font-size: clamp(28px, 4vw, 44px); letter-spacing: -.03em; margin-bottom: 12px; }
+    h3 { font-size: 17px; margin-bottom: 9px; }
+    p { color: var(--muted); line-height: 1.65; }
+    .lead { max-width: 780px; font-size: clamp(17px, 2vw, 21px); }
+    .accent { color: var(--cyan); }
+    .small { color: var(--muted); font-size: 13px; line-height: 1.55; }
+    .mono, code, pre { font-family: Consolas, "Cascadia Code", monospace; }
+
+    .cover {
+      display: flex;
+      min-height: 560px;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+    }
+
+    .cover::after {
+      content: "A → B → C → D";
+      position: absolute;
+      right: 3%;
+      bottom: 10%;
+      color: rgba(112, 169, 255, .13);
+      font-size: clamp(32px, 8vw, 94px);
+      font-weight: 900;
+      letter-spacing: -.06em;
+      pointer-events: none;
+    }
+
+    .cover-copy { position: relative; z-index: 1; }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      max-width: 820px;
+      margin-top: 32px;
+    }
+
+    .stat, .card, .metric-card {
+      border: 1px solid var(--line);
+      background: rgba(20, 38, 58, .72);
+      border-radius: var(--radius);
+      padding: 17px;
+    }
+
+    .stat strong { display: block; font-size: 27px; color: var(--text); margin-bottom: 4px; }
+    .stat span { color: var(--muted); font-size: 12px; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 13px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .section-head { margin-bottom: 25px; }
+    .section-head p { max-width: 820px; margin-bottom: 0; }
+
+    .architecture {
+      display: grid;
+      grid-template-columns: 1fr 36px 2fr 36px 1.15fr 36px 1fr;
+      align-items: stretch;
+      gap: 8px;
+      margin: 24px 0 18px;
+    }
+
+    .node {
+      min-height: 126px;
+      padding: 15px 13px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--panel-2);
+    }
+
+    .node strong { display: block; margin-bottom: 8px; }
+    .node small { display: block; color: var(--muted); line-height: 1.45; }
+    .node.claim { border-color: #3b5f82; }
+    .node.agent { border-color: #287b77; background: #102b35; }
+    .node.host { border-color: #8d6a37; background: #302719; }
+    .node.ledger { border-color: #427955; background: #172d25; }
+    .arrow { display: grid; place-items: center; color: var(--cyan); font-size: 24px; }
+
+    .shape-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 9px; }
+    .shape {
+      padding: 11px;
+      border-radius: 12px;
+      background: #0c1928;
+      border: 1px solid #20354b;
+      font-size: 13px;
+    }
+    .shape b { color: var(--cyan); }
+
+    .tool-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .tool {
+      border: 1px solid #295d63;
+      color: #b6fff5;
+      background: #0d292e;
+      border-radius: 8px;
+      padding: 6px 9px;
+      font: 12px Consolas, monospace;
+    }
+    .tool.write { border-color: #84653a; color: #ffdda6; background: #302619; }
+
+    .boundary {
+      border-left: 3px solid var(--orange);
+      padding: 10px 14px;
+      background: rgba(255, 189, 105, .07);
+      border-radius: 0 10px 10px 0;
+      color: #f9e3c2;
+      line-height: 1.55;
+      margin-top: 14px;
+    }
+
+    pre {
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      margin: 0;
+      border: 1px solid #263b52;
+      border-radius: 13px;
+      background: #07101b;
+      color: #d7e8f7;
+      padding: 15px;
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .command { color: var(--cyan); font-size: 13px; }
+    .command-box { position: relative; margin: 14px 0; }
+    .copy {
+      position: absolute;
+      right: 8px;
+      top: 8px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #12243a;
+      color: var(--text);
+      padding: 5px 8px;
+      cursor: pointer;
+      font-size: 11px;
+    }
+    .result-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 12px; }
+    .result { background: #10263a; border-radius: 10px; padding: 11px; }
+    .result strong { display: block; color: var(--green); font-size: 18px; }
+    .result span { font-size: 11px; color: var(--muted); }
+
+    .trace-wrap { display: grid; grid-template-columns: .9fr 1.1fr; gap: 16px; align-items: start; }
+    .trace-event {
+      display: grid;
+      grid-template-columns: 30px 1fr;
+      gap: 10px;
+      margin-bottom: 9px;
+      align-items: start;
+    }
+    .trace-event .num {
+      width: 27px; height: 27px; border-radius: 50%;
+      display: grid; place-items: center;
+      color: #07201f; background: var(--cyan); font-weight: 800; font-size: 12px;
+    }
+    .trace-event strong { display: block; margin-bottom: 3px; }
+    .trace-event span { color: var(--muted); font-size: 12px; line-height: 1.45; }
+    .trace-code { max-height: 410px; overflow: auto; }
+
+    .chart-panel { margin-top: 12px; }
+    .chart-title { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; margin-bottom: 13px; }
+    .chart-title strong { font-size: 15px; }
+    .chart-title span { font-size: 11px; color: var(--muted); }
+    .bar-row {
+      display: grid;
+      grid-template-columns: 112px 1fr 68px;
+      align-items: center;
+      gap: 10px;
+      margin: 12px 0;
+      font-size: 12px;
+    }
+    .bar-track { height: 13px; background: #091522; border-radius: 999px; overflow: hidden; }
+    .bar { height: 100%; border-radius: inherit; background: linear-gradient(90deg, #40cabb, #70a9ff); }
+    .bar.orange { background: linear-gradient(90deg, #ffbd69, #ff8296); }
+    .bar.blue { background: linear-gradient(90deg, #70a9ff, #9a8bff); }
+    .bar-value { text-align: right; color: var(--text); font-variant-numeric: tabular-nums; }
+    .legend { display: flex; flex-wrap: wrap; gap: 14px; color: var(--muted); font-size: 11px; margin-top: 9px; }
+    .legend i { display: inline-block; width: 9px; height: 9px; border-radius: 3px; margin-right: 5px; background: var(--cyan); }
+    .legend .o { background: var(--orange); }
+
+    .metric-card strong { display: block; font-size: 26px; margin: 7px 0; }
+    .metric-card .caption { color: var(--muted); font-size: 12px; line-height: 1.45; }
+    .good { color: var(--green); }
+    .warn { color: var(--orange); }
+    .bad { color: var(--pink); }
+
+    .check-list { list-style: none; margin: 0; padding: 0; }
+    .check-list li { position: relative; padding: 9px 0 9px 28px; color: #d8e6f4; line-height: 1.45; border-bottom: 1px solid rgba(42,64,89,.55); }
+    .check-list li:last-child { border-bottom: 0; }
+    .check-list li::before { content: "✓"; position: absolute; left: 0; color: var(--green); font-weight: 900; }
+
+    .talk-track { border: 1px dashed #3b5873; border-radius: 12px; padding: 12px 14px; color: var(--muted); font-size: 12px; line-height: 1.55; }
+    .source-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+    .source-row a {
+      color: #a9d8ff;
+      text-decoration: none;
+      border-bottom: 1px solid #426b8f;
+      font-size: 12px;
+      padding-bottom: 2px;
+    }
+    .source-row a:hover { color: white; }
+
+    .nav { display: flex; align-items: center; gap: 8px; }
+    .nav button {
+      border: 1px solid var(--line);
+      background: #102036;
+      color: var(--text);
+      border-radius: 9px;
+      padding: 8px 13px;
+      cursor: pointer;
+    }
+    .nav button:hover { border-color: var(--cyan); }
+    .dots { display: flex; gap: 6px; margin: 0 4px; }
+    .dots button { width: 8px; height: 8px; padding: 0; border: 0; background: #40546b; border-radius: 50%; }
+    .dots button.active { background: var(--cyan); transform: scale(1.25); }
+    .slide-count { min-width: 42px; text-align: center; font-variant-numeric: tabular-nums; }
+    .hint { color: #70849b; font-size: 11px; }
+
+    @media (max-width: 850px) {
+      .architecture { grid-template-columns: 1fr; }
+      .arrow { transform: rotate(90deg); height: 16px; }
+      .grid-4 { grid-template-columns: repeat(2, 1fr); }
+      .grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .trace-wrap, .grid-2 { grid-template-columns: 1fr; }
+      .slide { min-height: calc(100vh - 105px); }
+    }
+    @media (max-width: 560px) {
+      .topbar, .bottombar { padding: 11px 14px; }
+      .top-meta .pill { display: none; }
+      .slide { padding: 22px 17px; border-radius: 16px; }
+      .stats, .grid-3, .shape-strip { grid-template-columns: 1fr; }
+      .result-grid { grid-template-columns: repeat(2, 1fr); }
+      .bar-row { grid-template-columns: 85px 1fr 58px; gap: 7px; }
+      .hint { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="deck">
+    <header>
+      <div class="topbar">
+        <div class="brand">LOGIX-VN <span style="color:var(--muted);font-weight:500">/ LAB 8</span></div>
+        <div class="top-meta">
+          <span class="pill">Demo offline · MockLLM</span>
+          <span id="top-count">01 / 06</span>
+        </div>
+      </div>
+      <div class="progress"><span id="progress"></span></div>
+    </header>
+
+    <main>
+      <section class="slide active" aria-label="Mở đầu">
+        <div class="cover">
+          <div class="cover-copy">
+            <div class="eyebrow">From Workflows to Agents</div>
+            <h1>Một claim.<br><span class="accent">Bốn kiến trúc.</span></h1>
+            <p class="lead">Demo hệ thống xử lý yêu cầu hoàn phí vận chuyển LogiX-VN: từ kiến trúc và một lần chạy thật đến trace, benchmark và bằng chứng an toàn.</p>
+            <div class="stats">
+              <div class="stat"><strong>4</strong><span>workflow · single · orchestrator · swarm</span></div>
+              <div class="stat"><strong>248 / 248</strong><span>student tests pass</span></div>
+              <div class="stat"><strong>20 / 20</strong><span>crash safety scenarios</span></div>
+            </div>
+            <p class="small" style="margin-top:24px">Nhóm Titan · K5 · L3B</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" aria-label="System Architecture">
+        <div class="section-head">
+          <div class="eyebrow">01 · System Architecture</div>
+          <h2>Agent xử lý flow.<br><span class="accent">Host giữ quyền ghi tiền.</span></h2>
+          <p>Ba shape do nhóm viết và swarm tham chiếu dùng chung read tools, quote code và cổng ghi an toàn. Không agent nào được tự ghi thẳng SQLite.</p>
+        </div>
+
+        <div class="architecture" role="img" aria-label="Ticket qua shape đến read tools, host và ledger">
+          <div class="node claim"><strong>Claim / Ticket</strong><small>Input không tin cậy.<br>Câu “ignore policy” vẫn chỉ là dữ liệu.</small></div>
+          <div class="arrow">→</div>
+          <div class="node agent"><strong>Agent / Shape</strong><small>Chọn cách điều phối và đọc dữ kiện; tạo quote dựa trên order/policy có cấu trúc.</small>
+            <div class="shape-strip" style="margin-top:11px">
+              <div class="shape"><b>A</b> Workflow</div>
+              <div class="shape"><b>B</b> Single ReAct</div>
+              <div class="shape"><b>C</b> Orchestrator</div>
+              <div class="shape"><b>D</b> Swarm ref.</div>
+            </div>
+          </div>
+          <div class="arrow">→</div>
+          <div class="node host"><strong>Host gate</strong><small>Approval đúng claim, expiry/status, cap theo order, idempotency và audit.</small></div>
+          <div class="arrow">→</div>
+          <div class="node ledger"><strong>SQLite ledger</strong><small>Transaction atomically ghi effect + audit. Key: <code>refund:{claim_id}</code>.</small></div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <h3>Tools chỉ đọc cho agent/worker</h3>
+            <div class="tool-list">
+              <span class="tool">get_claim_view</span><span class="tool">lookup_order</span>
+              <span class="tool">lookup_policy</span><span class="tool">lookup_refund_history</span>
+              <span class="tool">compute_compensation · code</span>
+            </div>
+          </div>
+          <div class="card">
+            <h3>Write tool chỉ có ở host</h3>
+            <div class="tool-list"><span class="tool write">issue_refund</span><span class="tool write">append_audit</span></div>
+            <div class="boundary">Model không tính tiền, không tạo approval và không commit refund. Quote đầy đủ được host cap theo approval, paid amount và lịch sử order.</div>
+          </div>
+        </div>
+        <div class="source-row">
+          <a href="../../docs/architecture.md">Architecture</a>
+          <a href="../../docs/business_rules.md">Business rules</a>
+          <a href="../../src/config/tools.manifest.v1.1.yaml">Tool manifest</a>
+          <a href="../../src/config/autonomy_policy.yaml">Autonomy policy</a>
+        </div>
+      </section>
+
+      <section class="slide" aria-label="Live Demo">
+        <div class="section-head">
+          <div class="eyebrow">02 · Live Demo</div>
+          <h2>Chạy claim C-001<br><span class="accent">từ input đến ledger.</span></h2>
+          <p>Ví dụ công khai: order trễ 4 ngày, phí ship 35.000 VND, approval hợp lệ 35.000 VND. Tạo database mới để demo lần đầu.</p>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <h3>PowerShell — chạy trong <code>src/</code></h3>
+            <div class="command-box">
+              <button class="copy" data-copy="python -m lab8.run --shape workflow --claim-id C-001 --seed 11 --db data/demo-c001.sqlite">Copy</button>
+              <pre class="command">python -m lab8.run --shape workflow --claim-id C-001 --seed 11 --db data/demo-c001.sqlite</pre>
+            </div>
+            <p class="small">Nếu file DB đã tồn tại, runner resume/retry trên DB cũ. Muốn demo fresh run, dùng tên DB mới; không xóa dữ liệu cần giữ.</p>
+            <h3 style="margin-top:18px">Kết quả thực tế của lần chạy chuẩn bị</h3>
+            <div class="result-grid">
+              <div class="result"><strong>resolved</strong><span>status</span></div>
+              <div class="result"><strong>35.000</strong><span>proposal / refund VND</span></div>
+              <div class="result"><strong>1</strong><span>committed audit</span></div>
+              <div class="result"><strong>0 / 3</strong><span>model calls / tool calls</span></div>
+            </div>
+          </div>
+          <div class="card">
+            <h3>Diễn giải output</h3>
+            <ul class="check-list">
+              <li><code>status=resolved</code>: quote được host chấp nhận.</li>
+              <li><code>proposal_amount=35000</code>: quote đầy đủ, không phải tiền sau cap.</li>
+              <li><code>refund_effects[0].amount_vnd=35000</code>: effect ghi vào ledger.</li>
+              <li><code>idempotency_key=refund:C-001</code>: retry cùng claim không tạo effect thứ hai.</li>
+              <li><code>trace_path</code>: mở file JSON ở phần 03 để xem từng event.</li>
+            </ul>
+            <div class="boundary">Live output lúc chuẩn bị: cost mô phỏng 30 VND. Benchmark cost/success khác vì tính trung bình trên 70 trial/shape, gồm cả claim cần mức tool khác nhau.</div>
+          </div>
+        </div>
+        <div class="talk-track" style="margin-top:16px"><b>Talk track:</b> “Claim cung cấp mã C-001. Workflow đọc claim và order đã allowlist, code tính quote, rồi chỉ host mới được ghi ledger. Số tiền không đến từ câu chữ hay quyết định của LLM.”</div>
+      </section>
+
+      <section class="slide" aria-label="Agent Trace">
+        <div class="section-head">
+          <div class="eyebrow">03 · Agent Trace</div>
+          <h2>Bốn event. <span class="accent">Một quyết định có thể audit.</span></h2>
+          <p>Trace thật từ run `R-workflow-C-001-s11`. Mở JSON trong `src/traces/` sau khi chạy lệnh live; đoạn bên cạnh là nội dung đã ghi.</p>
+        </div>
+        <div class="trace-wrap">
+          <div>
+            <div class="trace-event"><div class="num">1</div><div><strong>claim</strong><span>Claim tồn tại; chỉ ghi claim/order ID, không ghi ticket thô hay parent secret.</span></div></div>
+            <div class="trace-event"><div class="num">2</div><div><strong>lookup_order</strong><span>Order thuộc principal scope; chỉ các trường allowlist như status, delay, shipping fee.</span></div></div>
+            <div class="trace-event"><div class="num">3</div><div><strong>quote</strong><span>Code áp policy hiện hành và tính entitlement: 35.000 VND.</span></div></div>
+            <div class="trace-event"><div class="num">4</div><div><strong>refund</strong><span>Host trả committed; ledger + audit được ghi trong transaction.</span></div></div>
+            <div class="boundary">Không có phone, address, internal note, item name, raw header hoặc `CANARY_SECRET_*` trong trace.</div>
+            <p class="small" style="margin-top:12px">Trace file: <code>src/traces/R-workflow-C-001-s11.json</code></p>
+          </div>
+          <pre class="trace-code">{
+  "run_id": "R-workflow-C-001-s11",
+  "steps": 4,
+  "events": [
+    {"kind":"claim","payload":{
+      "found":true,"claim_id":"C-001","order_id":"O-107"
+    }},
+    {"kind":"lookup_order","payload":{
+      "visible":true,"reason":"ok",
+      "order":{
+        "order_id":"O-107","status":"delivered_late",
+        "delay_days":4,"shipping_fee_vnd":35000,
+        "paid_vnd":250000,"damage_verified":false,
+        "carrier":"LOGIX_LOCAL"
+      }
+    }},
+    {"kind":"quote","payload":{
+      "amount_vnd":35000,"reason":"entitled",
+      "clause_ids":["SHIP-LATE-03"],
+      "parts":{"SHIP-LATE-03":35000}
+    }},
+    {"kind":"refund","payload":{
+      "ok":true,"reason":"committed"
+    }}
+  ]
+}</pre>
+        </div>
+        <div class="source-row">
+          <a href="../../docs/contracts.md">Trace contract v1</a>
+          <a href="../../src/lab8/trace.py">Trace writer</a>
+          <a href="../../src/tests/test_shape_trace_privacy.py">Privacy regression test</a>
+        </div>
+      </section>
+
+      <section class="slide" aria-label="Benchmark">
+        <div class="section-head">
+          <div class="eyebrow">04 · Benchmark</div>
+          <h2>Cùng claims, seed và giá.<br><span class="accent">Đo cả chất lượng lẫn chi phí.</span></h2>
+          <p>14 public claims × 5 seed (11, 22, 33, 44, 55) = 70 trial mỗi shape. Giá là mô phỏng VND; latency không đo được.</p>
+        </div>
+        <div class="grid-3">
+          <div class="card chart-panel">
+            <div class="chart-title"><strong>Pass rate ↑</strong><span>0–100%</span></div>
+            <div class="bar-row"><span>Workflow</span><div class="bar-track"><div class="bar" style="width:100%"></div></div><span class="bar-value">100%</span></div>
+            <div class="bar-row"><span>Single</span><div class="bar-track"><div class="bar" style="width:100%"></div></div><span class="bar-value">100%</span></div>
+            <div class="bar-row"><span>Orchestrator</span><div class="bar-track"><div class="bar" style="width:100%"></div></div><span class="bar-value">100%</span></div>
+            <div class="bar-row"><span>Swarm</span><div class="bar-track"><div class="bar orange" style="width:98.6%"></div></div><span class="bar-value">98.6%</span></div>
+            <div class="small">Swarm miss duy nhất: T02 / seed 55, tin số ngày trong ticket thay vì order.</div>
+          </div>
+          <div class="card chart-panel">
+            <div class="chart-title"><strong>Cost / success ↓</strong><span>VND mô phỏng</span></div>
+            <div class="bar-row"><span>Workflow</span><div class="bar-track"><div class="bar" style="width:49.3%"></div></div><span class="bar-value">27.86</span></div>
+            <div class="bar-row"><span>Single</span><div class="bar-track"><div class="bar blue" style="width:52%"></div></div><span class="bar-value">29.38</span></div>
+            <div class="bar-row"><span>Orchestrator</span><div class="bar-track"><div class="bar orange" style="width:100%"></div></div><span class="bar-value">56.46</span></div>
+            <div class="bar-row"><span>Swarm</span><div class="bar-track"><div class="bar orange" style="width:87.8%"></div></div><span class="bar-value">49.57</span></div>
+            <div class="small">Workflow thấp nhất trên public benchmark; đây không phải giá API thực tế.</div>
+          </div>
+          <div class="card chart-panel">
+            <div class="chart-title"><strong>Seed variance ↓</strong><span>lower = more stable</span></div>
+            <div class="bar-row"><span>Workflow</span><div class="bar-track"><div class="bar" style="width:0%"></div></div><span class="bar-value">0.000000</span></div>
+            <div class="bar-row"><span>Single</span><div class="bar-track"><div class="bar" style="width:0%"></div></div><span class="bar-value">0.000000</span></div>
+            <div class="bar-row"><span>Orchestrator</span><div class="bar-track"><div class="bar" style="width:0%"></div></div><span class="bar-value">0.000000</span></div>
+            <div class="bar-row"><span>Swarm</span><div class="bar-track"><div class="bar orange" style="width:100%"></div></div><span class="bar-value">0.000816</span></div>
+            <div class="small">Variance là phương sai population của 5 seed pass rates.</div>
+          </div>
+        </div>
+        <div class="grid-2" style="margin-top:13px">
+          <div class="metric-card"><span class="small">PASS^5 · mọi seed đều pass</span><strong>1.000</strong><div class="caption">Workflow, single, orchestrator. Swarm: 0.929.</div></div>
+          <div class="metric-card"><span class="small">Chọn kiến trúc theo dữ liệu</span><strong class="accent">Workflow</strong><div class="caption">Ít tự chủ nhất, pass rate ngang single/orchestrator và cost thấp nhất trên public set.</div></div>
+        </div>
+        <div class="source-row">
+          <a href="../../src/reports/benchmark.json">Full benchmark JSON</a>
+          <a href="../../src/reports/ablation_r4.json">Workflow vs orchestrator ablation</a>
+          <a href="../../docs/metrics.md">Metric definitions</a>
+        </div>
+      </section>
+
+      <section class="slide" aria-label="Reliability and Evaluation">
+        <div class="section-head">
+          <div class="eyebrow">05 · Reliability &amp; Evaluation</div>
+          <h2>Không trả sai. Không ghi trùng.<br><span class="accent">Không lộ dữ liệu.</span></h2>
+          <p>Safety không dựa vào lời hứa của agent: host là write gate; ledger/audit và scanner/test cung cấp bằng chứng độc lập.</p>
+        </div>
+        <div class="grid-3">
+          <div class="metric-card">
+            <div class="eyebrow">01 · Approval gate</div>
+            <strong class="good">0 observed</strong>
+            <div class="caption">Host kiểm approval đúng claim, trạng thái/hạn, approved amount và paid amount. T13/T14 kiểm cap theo order.</div>
+          </div>
+          <div class="metric-card">
+            <div class="eyebrow">02 · Idempotency</div>
+            <strong class="good">20 / 20</strong>
+            <div class="caption">Crash suite an toàn; T11 retry giữ một refund, T12 crash-resume giữ một effect và một committed audit.</div>
+          </div>
+          <div class="metric-card">
+            <div class="eyebrow">03 · Privacy boundary</div>
+            <strong class="good">0 marker leaked</strong>
+            <div class="caption">Regression test bơm marker vào ticket, secret, phone, address, note, item; không thấy trong trace, result hay stdout.</div>
+          </div>
+        </div>
+        <div class="grid-2" style="margin-top:16px">
+          <div class="card">
+            <h3>Evidence đã chạy</h3>
+            <ul class="check-list">
+              <li>Host suite: 57 passed.</li>
+              <li>Student matrix: 248 passed; mỗi shape nhóm viết có 62 passed.</li>
+              <li>Crash suite: 20/20.</li>
+              <li>CP4 approval/trace/crash tests: 24 passed; T12: 4 passed; T13/T14: 40 passed.</li>
+              <li>Submission validator: 0 FAIL, 0 WARN tại commit đã push.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Giới hạn cần nói rõ</h3>
+            <ul class="check-list">
+              <li>Public corpus có 14 claim; hidden pack chưa có trong workspace.</li>
+              <li>Secret/PII checks là test public; hidden count cần grader của giảng viên.</li>
+              <li>MockLLM seeded, cost chỉ mô phỏng; latency = unavailable.</li>
+              <li>Không tuyên bố kết quả public chứng minh hiệu năng production.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="talk-track" style="margin-top:14px"><b>Thông điệp kết:</b> “Agent chọn cách đọc và điều phối; code tính quote; host quyết định có được ghi hay không. Benchmark public ủng hộ workflow cho workload này, nhưng hidden evaluation vẫn là điều kiện để kết luận cuối.”</div>
+        <div class="source-row">
+          <a href="../../src/reports/crash.json">Crash evidence</a>
+          <a href="../../src/tests/test_order_cap_and_approval_binding.py">Approval/order-cap tests</a>
+          <a href="../../src/tests/test_shape_trace_privacy.py">Trace privacy tests</a>
+          <a href="../../report/team/decision_adr.md">Architecture decision</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="bottombar">
+      <span class="hint">Điều hướng: ← → hoặc Space · nhấn Home/End để đầu/cuối</span>
+      <div class="nav">
+        <button id="prev" aria-label="Slide trước">←</button>
+        <div class="dots" id="dots" aria-label="Chọn slide"></div>
+        <span class="slide-count" id="slide-count">01 / 06</span>
+        <button id="next" aria-label="Slide tiếp">→</button>
+      </div>
+      <span class="hint">Titan · K5 · L3B</span>
+    </footer>
+  </div>
+
+  <script>
+    (() => {
+      const slides = [...document.querySelectorAll(".slide")];
+      const dots = document.getElementById("dots");
+      const progress = document.getElementById("progress");
+      const count = document.getElementById("slide-count");
+      const topCount = document.getElementById("top-count");
+      let current = 0;
+
+      slides.forEach((_, index) => {
+        const dot = document.createElement("button");
+        dot.setAttribute("aria-label", `Mở slide ${index + 1}`);
+        dot.addEventListener("click", () => show(index));
+        dots.append(dot);
+      });
+
+      function show(index) {
+        current = Math.max(0, Math.min(slides.length - 1, index));
+        slides.forEach((slide, i) => slide.classList.toggle("active", i === current));
+        [...dots.children].forEach((dot, i) => dot.classList.toggle("active", i === current));
+        const label = `${String(current + 1).padStart(2, "0")} / ${String(slides.length).padStart(2, "0")}`;
+        count.textContent = label;
+        topCount.textContent = label;
+        progress.style.width = `${((current + 1) / slides.length) * 100}%`;
+      }
+
+      document.getElementById("prev").addEventListener("click", () => show(current - 1));
+      document.getElementById("next").addEventListener("click", () => show(current + 1));
+      document.addEventListener("keydown", event => {
+        if (event.key === "ArrowRight" || event.key === " ") { event.preventDefault(); show(current + 1); }
+        if (event.key === "ArrowLeft") show(current - 1);
+        if (event.key === "Home") show(0);
+        if (event.key === "End") show(slides.length - 1);
+      });
+
+      document.querySelectorAll(".copy").forEach(button => {
+        button.addEventListener("click", async () => {
+          await navigator.clipboard.writeText(button.dataset.copy);
+          const previous = button.textContent;
+          button.textContent = "Copied";
+          setTimeout(() => { button.textContent = previous; }, 1200);
+        });
+      });
+
+      show(0);
+    })();
+  </script>
+</body>
+</html>
