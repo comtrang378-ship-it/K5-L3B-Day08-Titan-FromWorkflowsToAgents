@@ -34,7 +34,7 @@ Gợi ý chia vai:
 | Người | Vai | Commit | Test đã thêm hoặc sửa |
 | --- | --- | --- | --- |
 | Nguyễn Anh Tú | Điều phối, workflow, tích hợp | Chờ commit | Cần bổ sung test workflow |
-| Đăng Thùy Dung | Single agent / ReAct, benchmark | Chờ commit | Cần bổ sung test single |
+| Đăng Thùy Dung | Single agent / ReAct, benchmark | Chờ commit | `src/tests/test_single_react.py` (tool chỉ đọc, trần 8 bước, bỏ qua delay trong ticket, trace không lộ secret) |
 | Trần Thành Vinh | Orchestrator, handoff, trace, crash suite | Chờ commit | Cần bổ sung test orchestrator/handoff |
 
 ## Cá nhân
@@ -71,11 +71,11 @@ Sao chép mục dưới đây cho từng thành viên.
 
 ### Đóng góp cụ thể
 
-- Cần ghi commit và test đã thêm/sửa sau khi hoàn thành.
+- Viết `src/lab8/shapes/single.py` (push chung trong commit `a69f265`); thêm `src/tests/test_single_react.py` (39 test); chạy lại benchmark, xác nhận khớp `reports/benchmark.json`; điền `research_card.md`.
 
 ### Bằng chứng
 
-- Cần bổ sung sau khi commit.
+- Báo cáo chi tiết: `report/team/2A202604116_DangThuyDung.md`.
 
 ## 2A202603821_TranThanhVinh
 
