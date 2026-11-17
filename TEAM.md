@@ -14,7 +14,7 @@
 | --: | ------ | ---- | ----- | ------ | ------- |
 | 1 | Nguyễn Anh Tú | 2A202604088 | comtrang378@gmail.com | [comtrang378-ship-it](https://github.com/comtrang378-ship-it) | Điều phối, workflow và tích hợp |
 | 2 | Đăng Thùy Dung | 2A202604116 | dangthuydung1410@gmail.com | [dtdung14](https://github.com/dtdung14) | Kiểm thử và benchmark |
-| 3 | Trần Thành Vinh | 2A202603821 | Chưa cung cấp | Chưa cung cấp | Orchestrator, handoff, trace và crash suite |
+| 3 | Trần Thành Vinh | 2A202603821 | 26ai.vinhtt@vinuni.edu.vn | [vinhs0](https://github.com/vinhs0) | Orchestrator, handoff, trace và crash suite |
 
 Gợi ý chia vai:
 
