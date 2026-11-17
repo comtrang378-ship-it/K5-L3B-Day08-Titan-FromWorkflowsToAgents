@@ -13,7 +13,7 @@
 | STT | Họ tên | MSSV | Email | GitHub | Vai trò |
 | --: | ------ | ---- | ----- | ------ | ------- |
 | 1 | Nguyễn Anh Tú | 2A202604088 | comtrang378@gmail.com | [comtrang378-ship-it](https://github.com/comtrang378-ship-it) | Điều phối, workflow và tích hợp |
-| 2 | Đăng Thùy Dung | 2A202604116 | dangthuydung1410@gmail.com | [dtdung14](https://github.com/dtdung14) | Single agent / ReAct và benchmark |
+| 2 | Đăng Thùy Dung | 2A202604116 | dangthuydung1410@gmail.com | [dtdung14](https://github.com/dtdung14) | Kiểm thử và benchmark |
 | 3 | Trần Thành Vinh | 2A202603821 | Chưa cung cấp | Chưa cung cấp | Orchestrator, handoff, trace và crash suite |
 
 Gợi ý chia vai:
@@ -24,7 +24,7 @@ Gợi ý chia vai:
 ### Phân công cụ thể
 
 - **Nguyễn Anh Tú — điều phối, workflow, tích hợp:** phụ trách `workflow.py`, rà contract chung, ghép các nhánh và chạy cổng host cùng ma trận student.
-- **Đăng Thùy Dung — single agent / ReAct, benchmark:** phụ trách `single.py`, kiểm tra giới hạn 8 bước và tool chỉ đọc; chạy benchmark public, tổng hợp số liệu.
+- **Đăng Thùy Dung — kiểm thử và benchmark:** viết test bảo vệ cho shape single (tool chỉ đọc, trần 8 bước); kiểm tra benchmark public tái lập được, tổng hợp số liệu.
 - **Trần Thành Vinh — orchestrator, handoff và an toàn:** phụ trách `orchestrator.py`, allowlist handoff, trace không lộ dữ liệu nhạy cảm; chạy crash suite và rà checklist nộp.
 - **Cùng chịu trách nhiệm:** mỗi người thêm hoặc sửa ít nhất một test cho phần mình, tự kiểm thử, commit phần việc riêng; cả nhóm cùng review kết quả benchmark và báo cáo.
 
@@ -35,7 +35,7 @@ Gợi ý chia vai:
 | Người | Vai | Commit | Test đã thêm hoặc sửa |
 | --- | --- | --- | --- |
 | Nguyễn Anh Tú | Điều phối, workflow, tích hợp | [workflow.py](src/lab8/shapes/workflow.py), [single.py](src/lab8/shapes/single.py), [orchestrator.py](src/lab8/shapes/orchestrator.py), [benchmark.json](src/reports/benchmark.json), [crash.json](src/reports/crash.json) (`a69f265`); [test_public_matrix.py](src/tests/test_public_matrix.py) (`96c9dc1`); [test_shape_trace_privacy.py](src/tests/test_shape_trace_privacy.py), [ablation_r4.json](src/reports/ablation_r4.json), [group_report.md](report/team/group_report.md), [research_card.md](report/team/research_card.md) (`15f3011`, `881536e`); [TEAM.md](TEAM.md), [báo cáo cá nhân](report/team/2A202604088_NguyenAnhTu.md) (`59bf772`, `46e29ec`); [demo.html](report/team/demo.html) (`6927f48`, `8e56c37`) | Thêm/mở rộng [test_shape_trace_privacy.py](src/tests/test_shape_trace_privacy.py); sửa selector CP2 trong [test_public_matrix.py](src/tests/test_public_matrix.py) |
-| Đăng Thùy Dung | Single agent / ReAct, benchmark | `a69f265` (single.py), `1c33f34` (test, báo cáo) | `src/tests/test_single_react.py` (tool chỉ đọc, trần 8 bước, bỏ qua delay trong ticket, trace không lộ secret) |
+| Đăng Thùy Dung | Kiểm thử và benchmark | `1c33f34` (test, báo cáo), `e6b32cb` (merge PR #1), `14eca6e` (TEAM.md) | `src/tests/test_single_react.py` (tool chỉ đọc, trần 8 bước, bỏ qua delay trong ticket, trace không lộ secret) |
 | Trần Thành Vinh | Orchestrator, handoff, trace, crash suite | Chờ commit | `test_shape_trace_privacy.py` — orchestrator (cần review/commit cá nhân) |
 
 ## Cá nhân
@@ -78,19 +78,12 @@ Sao chép mục dưới đây cho từng thành viên.
 
 ### Phần việc phụ trách
 
-- Shape B `single` (một agent ReAct): giới hạn 8 bước, model chỉ chọn tool đọc, tiền do `compute_compensation` tính, chỉ host ghi ledger.
-- Test bảo vệ cho shape single; kiểm tra tái lập benchmark public và tổng hợp số liệu cho ADR, research card.
+- Kiểm thử: test bảo vệ các ràng buộc của shape single. Code `single.py` không thuộc phần việc của Dung.
+- Benchmark: kiểm tra benchmark public tái lập được và tổng hợp số liệu cho ADR, research card.
 
 ### Đóng góp cụ thể
 
 - **CP1:** cài môi trường Python 3.13 (`src/.venv`), chạy smoke và cổng host; đọc business rules, contract và swarm tham chiếu.
-- **CP2:** viết [single.py](src/lab8/shapes/single.py) (push chung trong commit `a69f265`):
-  - claim không tồn tại → `failed`; thiếu `order_id` → `needs_info`, không vào vòng ReAct, không ghi ledger;
-  - `decide` chỉ chọn tool đọc theo thứ tự `lookup_order` → `compute_compensation`; order không thấy được → `escalated`; kết quả lạ → `failed`;
-  - mỗi bước `decide` gọi MockLLM một lần và tính vào `Budget` để chi phí so được với các shape khác;
-  - `run_react(..., max_steps=8)`; chạm trần → `failed` / `step_cap`;
-  - quote lấy từ order row, không từ số ngày trong ticket; quote 0 → `denied`, không gọi `issue_refund`.
-- **CP3:** sau vòng lặp, code (không phải model) gọi `durability.issue_refund` với quote đầy đủ và `crash_at`; không bắt `InjectedCrash` (ghi trace rồi ném lại); host từ chối → `denied`, xung đột số tiền → `failed`. Trace chỉ ghi claim_id/order_id, kết quả tool cuối, quote và quyết định.
 - **CP4:** thêm [test_single_react.py](src/tests/test_single_react.py) (39 test, chạy trong cổng host):
   - `test_single_model_only_dispatches_read_tools`: mọi tool vòng ReAct dispatch trên 14 claim đều thuộc `READONLY_TOOLS`;
   - `test_single_stays_within_step_cap`: `model_calls ≤ 8` trên 14 claim × 5 seed;
@@ -98,15 +91,14 @@ Sao chép mục dưới đây cho từng thành viên.
   - `test_single_ignores_delay_written_in_ticket`: C-002 (ticket ghi trễ 5 ngày, order row 2 ngày) → `denied` ở cả 5 seed, kể cả seed 55 là seed swarm tham chiếu fail;
   - `test_single_trace_has_no_secret_or_ticket_text`: trace và kết quả không chứa `CANARY_SECRET` hay nguyên văn ticket, `run_id` khớp.
 - **CP5:** chạy lại benchmark 4 shape × 14 claim × 5 seed ra file tạm, so với [benchmark.json](src/reports/benchmark.json) đã commit: trùng khớp (bỏ qua timestamp), tức số liệu tái lập được; tổng hợp số liệu theo shape cho ADR và research card. Nhóm chốt research card theo câu R4.
-- **Tích hợp:** mở PR #1 (`dung/single-agent` → `main`), giải quyết xung đột `TEAM.md` / `research_card.md` khi merge (giữ R4 của nhóm), chạy lại toàn bộ test trước khi merge.
-- File và commit đối chiếu: [single.py](src/lab8/shapes/single.py) (`a69f265`); [test_single_react.py](src/tests/test_single_react.py), [báo cáo cá nhân](report/team/2A202604116_DangThuyDung.md) (`1c33f34`, `9cbdfd4`, `f6d8b82`); merge (`e6b32cb`, PR #1 → `654c8f5`); ADR commit chốt (`be88a30`).
+- **Tích hợp:** mở PR #1 (`dung/single-agent` → `main`), giải quyết xung đột `TEAM.md` / `research_card.md` khi merge (giữ R4 của nhóm), chạy lại toàn bộ test trước khi merge; gỡ dấu xung đột còn sót trong bảng đóng góp.
+- File và commit đối chiếu: [test_single_react.py](src/tests/test_single_react.py), [báo cáo cá nhân](report/team/2A202604116_DangThuyDung.md) (`1c33f34`, `9cbdfd4`, `f6d8b82`); merge (`e6b32cb`, PR #1 → `654c8f5`); TEAM.md (`14eca6e`).
 
 ### Bằng chứng
 
 - `python -m pytest -q tests/test_single_react.py`: 39 passed.
-- `python -m pytest -q -m student -o addopts= -k single`: ma trận T01–T14 của single pass, gồm T11 (gọi lại) và T12 (crash rồi resume) đều chỉ một refund.
 - Sau khi merge PR #1 vào `main`: `python -m pytest -q` 96 passed; `python -m pytest -q -m student -o addopts=` 248 passed; `python -m lab8.check_submission` 0 FAIL.
-- Số liệu single trong `reports/benchmark.json`: pass rate 1.000, pass^5 1.000, variance 0, cost/success 29.38 VND (workflow 27.86, orchestrator 56.46, swarm 49.57); run id `R-single-C-001-s11`, `R-single-C-002-s55`.
+- Số liệu trong `reports/benchmark.json`: workflow 1.000 / 27.86 VND, single 1.000 / 29.38 VND, orchestrator 1.000 / 56.46 VND, swarm 0.986 / 49.57 VND (pass rate / cost per success); run id `R-single-C-001-s11`, `R-single-C-002-s55`.
 - Báo cáo chi tiết: [report/team/2A202604116_DangThuyDung.md](report/team/2A202604116_DangThuyDung.md).
 
 ## 2A202603821_TranThanhVinh
