@@ -12,7 +12,7 @@
 | STT | Họ tên | MSSV | Email | GitHub | Vai trò |
 | --: | ------ | ---- | ----- | ------ | ------- |
 | 1 | Nguyễn Anh Tú | 2A202604088 | comtrang378@gmail.com | [comtrang378-ship-it](https://github.com/comtrang378-ship-it) | Điều phối, workflow và tích hợp |
-| 2 | Đăng Thùy Dung | 2A202604116 | Chưa cung cấp | Chưa cung cấp | Single agent / ReAct và benchmark |
+| 2 | Đăng Thùy Dung | 2A202604116 | Chưa cung cấp | [dtdung14](https://github.com/dtdung14) | Single agent / ReAct và benchmark |
 | 3 | Trần Thành Vinh | 2A202603821 | Chưa cung cấp | Chưa cung cấp | Orchestrator, handoff, trace và crash suite |
 
 Gợi ý chia vai:
@@ -33,8 +33,13 @@ Gợi ý chia vai:
 
 | Người | Vai | Commit | Test đã thêm hoặc sửa |
 | --- | --- | --- | --- |
+<<<<<<< HEAD
 | Nguyễn Anh Tú | Điều phối, workflow, tích hợp | [workflow.py](src/lab8/shapes/workflow.py), [single.py](src/lab8/shapes/single.py), [orchestrator.py](src/lab8/shapes/orchestrator.py), [benchmark.json](src/reports/benchmark.json), [crash.json](src/reports/crash.json) (`a69f265`); [test_public_matrix.py](src/tests/test_public_matrix.py) (`96c9dc1`); [test_shape_trace_privacy.py](src/tests/test_shape_trace_privacy.py), [ablation_r4.json](src/reports/ablation_r4.json), [group_report.md](report/team/group_report.md), [research_card.md](report/team/research_card.md) (`15f3011`, `881536e`); [TEAM.md](TEAM.md), [báo cáo cá nhân](report/team/2A202604088_NguyenAnhTu.md) (`59bf772`, `46e29ec`); [demo.html](report/team/demo.html) (`6927f48`, `8e56c37`) | Thêm/mở rộng [test_shape_trace_privacy.py](src/tests/test_shape_trace_privacy.py); sửa selector CP2 trong [test_public_matrix.py](src/tests/test_public_matrix.py) |
 | Đăng Thùy Dung | Single agent / ReAct, benchmark | Chờ commit | `test_shape_trace_privacy.py` — single (cần review/commit cá nhân) |
+=======
+| Nguyễn Anh Tú | Điều phối, workflow, tích hợp | `a69f265`, `96c9dc1`, `15f3011`, `881536e`, `59bf772`, `6927f48`, `8e56c37`, `46e29ec` | Thêm/mở rộng `test_shape_trace_privacy.py`; sửa selector CP2 trong `test_public_matrix.py` |
+| Đăng Thùy Dung | Single agent / ReAct, benchmark | `a69f265` (single.py), `1c33f34` (test, báo cáo) | `src/tests/test_single_react.py` (tool chỉ đọc, trần 8 bước, bỏ qua delay trong ticket, trace không lộ secret) |
+>>>>>>> 654c8f5a9c1b3b46a759e52e2260179c35077b11
 | Trần Thành Vinh | Orchestrator, handoff, trace, crash suite | Chờ commit | `test_shape_trace_privacy.py` — orchestrator (cần review/commit cá nhân) |
 
 ## Cá nhân
@@ -81,11 +86,11 @@ Sao chép mục dưới đây cho từng thành viên.
 
 ### Đóng góp cụ thể
 
-- Cần ghi commit và test đã thêm/sửa sau khi hoàn thành.
+- Viết `src/lab8/shapes/single.py` (push chung trong commit `a69f265`); thêm `src/tests/test_single_react.py` (39 test); chạy lại benchmark, xác nhận khớp `reports/benchmark.json`; cung cấp số liệu benchmark cho research card và ADR.
 
 ### Bằng chứng
 
-- Cần bổ sung sau khi commit.
+- Báo cáo chi tiết: `report/team/2A202604116_DangThuyDung.md`.
 
 ## 2A202603821_TranThanhVinh
 
