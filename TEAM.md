@@ -6,6 +6,7 @@
 - Lớp: L3B
 - Repo nhóm: `K5-L3B-DAY08-Titan-FromWorkflowsToAgents` (xem [SUBMISSION.md](SUBMISSION.md))
 - URL repo, nhánh nộp, file đối chiếu: [GitHub](https://github.com/comtrang378-ship-it/K5-L3B-Day8-Titan-From-Workflows-to-Agents), nhánh `main`; shape: [workflow.py](src/lab8/shapes/workflow.py), [single.py](src/lab8/shapes/single.py), [orchestrator.py](src/lab8/shapes/orchestrator.py), benchmark [benchmark.json](src/reports/benchmark.json) và crash [crash.json](src/reports/crash.json) (`a69f265`); selector CP2: [test_public_matrix.py](src/tests/test_public_matrix.py) (`96c9dc1`); privacy/CP4: [test_shape_trace_privacy.py](src/tests/test_shape_trace_privacy.py) (`15f3011`, `881536e`).
+- Bonus topic nhóm chọn: **B1 — Investigator song song và critical path**; bằng chứng và giới hạn: [bonus_report.md](report/team/bonus_report.md).
 
 ## Thành viên
 
