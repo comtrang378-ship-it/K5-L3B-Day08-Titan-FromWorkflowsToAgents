@@ -16,7 +16,7 @@
 
 ## 3. Đóng góp cụ thể
 
-Commit chính: `Chờ commit` (ghi short hash sau khi commit trên nhánh `TranThanhVinh`).
+Commit chính: `2749e19` (nhánh `TranThanhVinh`, đã merge vào `main`).
 
 Quyết định kỹ thuật:
 
