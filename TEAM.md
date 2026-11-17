@@ -5,7 +5,7 @@
 - Tên nhóm: Titan
 - Lớp: L3B
 - Repo nhóm: `K5-L3B-DAY08-Titan-FromWorkflowsToAgents` (xem [SUBMISSION.md](SUBMISSION.md))
-- URL repo, nhánh nộp, commit chốt: Chưa xác nhận
+- URL repo, nhánh nộp, commit chốt: [GitHub](https://github.com/comtrang378-ship-it/K5-L3B-Day8-Titan-From-Workflows-to-Agents), nhánh `main`; commit hồ sơ cuối sẽ ghi sau khi commit.
 
 ## Thành viên
 
@@ -33,9 +33,9 @@ Gợi ý chia vai:
 
 | Người | Vai | Commit | Test đã thêm hoặc sửa |
 | --- | --- | --- | --- |
-| Nguyễn Anh Tú | Điều phối, workflow, tích hợp | Chờ commit | Cần bổ sung test workflow |
-| Đăng Thùy Dung | Single agent / ReAct, benchmark | Chờ commit | Cần bổ sung test single |
-| Trần Thành Vinh | Orchestrator, handoff, trace, crash suite | Chờ commit | Cần bổ sung test orchestrator/handoff |
+| Nguyễn Anh Tú | Điều phối, workflow, tích hợp | `a69f265` (shape); test mới chờ commit | `test_shape_trace_privacy.py` — workflow |
+| Đăng Thùy Dung | Single agent / ReAct, benchmark | Chờ commit | `test_shape_trace_privacy.py` — single (cần review/commit cá nhân) |
+| Trần Thành Vinh | Orchestrator, handoff, trace, crash suite | Chờ commit | `test_shape_trace_privacy.py` — orchestrator (cần review/commit cá nhân) |
 
 ## Cá nhân
 
@@ -57,11 +57,13 @@ Sao chép mục dưới đây cho từng thành viên.
 
 ### Đóng góp cụ thể
 
-- Cần ghi commit và test đã thêm/sửa sau khi hoàn thành.
+- Commit `a69f265` chứa triển khai ba shape và benchmark/crash evidence. Đã bổ sung test hồi quy trace privacy; test/report hiện tại chờ commit.
 
 ### Bằng chứng
 
-- Cần bổ sung sau khi commit.
+- `python -m lab8.smoke`: pass; `python -m pytest -q`: 57 passed.
+- `python -m pytest -q -m student -o addopts=`: 248 passed; crash suite 20/20.
+- Test mới: `src/tests/test_shape_trace_privacy.py`.
 
 ## 2A202604116_DangThuyDung
 
