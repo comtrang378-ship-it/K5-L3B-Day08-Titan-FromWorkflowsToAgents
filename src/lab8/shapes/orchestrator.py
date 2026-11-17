@@ -75,8 +75,64 @@ def run_claim(
     conn = connect(store_path)
     try:
         return _run(conn, claim_id, seed=seed, crash_at=crash_at)
+    except InjectedCrash:
+        # T12 must see the injected crash; never swallow it.
+        raise
+    except Exception as exc:  # noqa: BLE001 — contract: run_claim must not raise
+        return _fail_closed(conn, claim_id, seed=seed, exc=exc)
     finally:
         conn.close()
+
+
+def _fail_closed(
+    conn: sqlite3.Connection,
+    claim_id: str,
+    *,
+    seed: int,
+    exc: Exception,
+) -> RunResult:
+    """Turn an unexpected error into a `failed` result with a fresh, clean trace.
+
+    Only the exception type is recorded: messages can echo row data (phone,
+    address, secrets), so they never reach the trace or the result. The ledger
+    is read back by `finish`, so a refund committed before the error is still
+    reported truthfully.
+    """
+    shape = "orchestrator"
+    trace = Trace(make_run_id(shape, claim_id, seed))
+    reason = f"exception:{type(exc).__name__}"
+    trace.add("error", {"reason": reason})
+    try:
+        return finish(
+            conn,
+            shape=shape,
+            claim_id=claim_id,
+            seed=seed,
+            status="failed",
+            proposal_amount=0,
+            budget=Budget(),
+            trace=trace,
+            error_reason=reason,
+        )
+    except Exception:  # noqa: BLE001 — store unusable; still honour the contract
+        path = trace.write()
+        return RunResult(
+            run_id=trace.run_id,
+            claim_id=claim_id,
+            shape=shape,
+            seed=seed,
+            status="failed",
+            proposal_amount=0,
+            refund_effects=[],
+            committed_audit_count=0,
+            model_calls=0,
+            tool_calls=0,
+            input_tokens=0,
+            output_tokens=0,
+            cost_estimate=0.0,
+            trace_path=str(path),
+            error_reason=reason,
+        )
 
 
 def _run(
