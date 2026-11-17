@@ -5,7 +5,7 @@
 - Tên nhóm: Titan
 - Lớp: L3B
 - Repo nhóm: `K5-L3B-DAY08-Titan-FromWorkflowsToAgents` (xem [SUBMISSION.md](SUBMISSION.md))
-- URL repo, nhánh nộp, commit đối chiếu: [GitHub](https://github.com/comtrang378-ship-it/K5-L3B-Day8-Titan-From-Workflows-to-Agents), nhánh `main`; shape/benchmark `a69f265`, selector CP2 `96c9dc1`, test CP4 `881536e`.
+- URL repo, nhánh nộp, commit đối chiếu: [GitHub](https://github.com/comtrang378-ship-it/K5-L3B-Day8-Titan-From-Workflows-to-Agents), nhánh `main`; shape/benchmark `a69f265`, selector CP2 `96c9dc1`, test privacy/CP4 `15f3011` và `881536e`.
 
 ## Thành viên
 
@@ -65,6 +65,7 @@ Sao chép mục dưới đây cho từng thành viên.
 - `python -m pytest -q -m student -o addopts=`: 248 passed; crash suite 20/20.
 - Test mới: `src/tests/test_shape_trace_privacy.py`.
 - CP2 selectors: từng shape đều 62 passed; chi tiết trong báo cáo cá nhân.
+- CP3 demo: `python -m lab8.demo.buggy_workflow` cho thấy cách dùng checkpoint đơn lẻ tạo hai refund rows thay vì một.
 
 ## 2A202604116_DangThuyDung
 

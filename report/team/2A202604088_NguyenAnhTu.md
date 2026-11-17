@@ -32,6 +32,7 @@
 - CP4 crash-resume T12 trên bốn shape: 4 passed; T13/T14 về order refund cap: 40 passed.
 - Test trace privacy đưa marker canary trong ticket, parent secret và phone/address/internal note/item name; marker không xuất hiện trong trace, RunResult hoặc stdout ở cả ba shape.
 - `check_submission`: 0 FAIL; gói hidden không có trong workspace nên không có số liệu hidden về leak/bypass.
+- CP3 demo: `python -m lab8.demo.buggy_workflow` in `unsafe refund rows: 2 (the host ledger must stay at 1)`, cho thấy checkpoint đơn lẻ không đảm bảo exactly-once effect.
 
 ## Ghi chú CP2
 
