@@ -9,7 +9,30 @@
 
 ## 2. Phần việc phụ trách
 
+### 2.1. Công việc phụ trách
+
 Điều phối, workflow và tích hợp theo phân công trong [TEAM.md](../../TEAM.md).
+
+### 2.2. Luồng công việc hệ thống
+
+Claim / Ticket
+      |
+      v
+Agent / Shape
+(Workflow / Single ReAct / Orchestrator / Swarm reference)
+      |
+      | Đọc dữ liệu, đối chiếu order và policy,
+      | tạo quote dựa trên dữ liệu có cấu trúc
+      v
+Host Gate
+(Approval, expiry/status, cap theo order,
+ idempotency và audit)
+      |
+      | Chỉ khi vượt qua các kiểm tra của Host
+      v
+SQLite Ledger
+(Transaction ghi effect + audit)
+
 
 ## 3. Đóng góp cụ thể
 
