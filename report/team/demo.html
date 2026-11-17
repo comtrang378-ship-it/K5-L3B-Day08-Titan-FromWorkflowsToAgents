@@ -127,6 +127,7 @@
     .accent { color: var(--cyan); }
     .small { color: var(--muted); font-size: 13px; line-height: 1.55; }
     .mono, code, pre { font-family: Consolas, "Cascadia Code", monospace; }
+    code { overflow-wrap: anywhere; }
 
     .cover {
       display: flex;
@@ -168,7 +169,7 @@
     .stat strong { display: block; font-size: 27px; color: var(--text); margin-bottom: 4px; }
     .stat span { color: var(--muted); font-size: 12px; }
 
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .grid-2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
     .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 13px; }
     .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
     .section-head { margin-bottom: 25px; }
@@ -342,7 +343,7 @@
       .arrow { transform: rotate(90deg); height: 16px; }
       .grid-4 { grid-template-columns: repeat(2, 1fr); }
       .grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .trace-wrap, .grid-2 { grid-template-columns: 1fr; }
+      .trace-wrap, .grid-2 { grid-template-columns: minmax(0, 1fr); }
       .slide { min-height: calc(100vh - 105px); }
     }
     @media (max-width: 560px) {
