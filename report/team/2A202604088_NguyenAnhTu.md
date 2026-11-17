@@ -22,9 +22,18 @@
 - `python -m lab8.smoke`: pass.
 - `python -m pytest -q`: 57 passed.
 - `python -m pytest -q -m student -o addopts=`: 248 passed.
+- CP2 workflow: `python -m pytest -q -m student -o addopts= -k workflow` — 62 passed.
+- CP2 single: `python -m pytest -q -m student -o addopts= -k single` — 62 passed after renaming the shared matrix test to avoid a `-k single` name collision.
+- CP2 orchestrator: `python -m pytest -q -m student -o addopts= -k orchestrator` — 62 passed.
 - `tests/test_shape_trace_privacy.py`: 3 trường hợp (workflow, single, orchestrator) passed trong cổng host.
 - Run id: `R-workflow-C-001-s11`; kết quả ở `src/reports/benchmark.json`.
 - Crash safety: 20/20 trong `src/reports/crash.json`.
+
+## Ghi chú CP2
+
+- **Mức tự chủ:** workflow chạy các bước Python cố định; single dùng ReAct nhưng bị giới hạn tối đa 8 bước và chỉ gọi tool đọc; orchestrator chuyển handoff đã sanitize cho investigator chỉ đọc rồi tự quyết định gọi host.
+- **Vì sao truyền quote đầy đủ:** `issue_refund` tính phần còn được hoàn theo tổng đã refund của order. Nếu shape tự trừ trước, host trừ lần nữa và có thể trả thiếu, như T14.
+- **Vì sao không tự từ chối quote dương:** shape phải gọi `issue_refund` để host ghi audit `policy_denied` khi approval không hợp lệ hoặc order đã hoàn đủ. Nếu shape chặn trước, audit bắt buộc sẽ thiếu.
 
 ## 5. Công cụ AI đã dùng
 

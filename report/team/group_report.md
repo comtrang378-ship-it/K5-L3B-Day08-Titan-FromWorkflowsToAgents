@@ -31,7 +31,7 @@ Benchmark public gồm 14 claim × 5 seed, cùng MockLLM, bảng giá mô phỏn
 | orchestrator | 1.000 | 1.000 | 1.000–1.000 | 0.000000 | 56.46 | 4.71 / 5 |
 | swarm | 0.986 | 0.929 | 0.929–1.000 | 0.000816 | 49.57 | 2.80 / 3 |
 
-Crash suite đạt **20/20** (`src/reports/crash.json`). Bộ student đạt 248 passed; cổng host đạt 57 passed, bao gồm ba trường hợp trace privacy mới. Swarm có một trial sai: T02 ở seed 55, khi ticket ghi trễ 5 ngày còn order ghi 2 ngày. Các shape nhóm viết không gặp lỗi này trên public set. Gói hidden không có trong workspace, vì vậy chưa có kết quả tự kiểm hidden và không thể kết luận pass rate 40 × 5.
+Crash suite đạt **20/20** (`src/reports/crash.json`). Bộ student đạt 248 passed; cổng host đạt 57 passed, bao gồm ba trường hợp trace privacy mới. Mỗi selector CP2 (`-k workflow`, `-k single`, `-k orchestrator`) chạy đúng 62 test sau khi đổi tên test ma trận chung để tránh `-k single` khớp tên test thay vì chỉ shape. Swarm có một trial sai: T02 ở seed 55, khi ticket ghi trễ 5 ngày còn order ghi 2 ngày. Các shape nhóm viết không gặp lỗi này trên public set. Gói hidden không có trong workspace, vì vậy chưa có kết quả tự kiểm hidden và không thể kết luận pass rate 40 × 5.
 
 Workflow được chọn vì đạt cùng độ chính xác public như single và orchestrator, đồng thời có cost/success thấp nhất; đây là kết luận giới hạn ở bộ public. Phân tích thêm ablation workflow–orchestrator nằm trong [research_card.md](./research_card.md).
 
