@@ -12,7 +12,7 @@
 | STT | Họ tên | MSSV | Email | GitHub | Vai trò |
 | --: | ------ | ---- | ----- | ------ | ------- |
 | 1 | Nguyễn Anh Tú | 2A202604088 | comtrang378@gmail.com | [comtrang378-ship-it](https://github.com/comtrang378-ship-it) | Điều phối, workflow và tích hợp |
-| 2 | Đăng Thùy Dung | 2A202604116 | Chưa cung cấp | Chưa cung cấp | Single agent / ReAct và benchmark |
+| 2 | Đăng Thùy Dung | 2A202604116 | Chưa cung cấp | [dtdung14](https://github.com/dtdung14) | Single agent / ReAct và benchmark |
 | 3 | Trần Thành Vinh | 2A202603821 | Chưa cung cấp | Chưa cung cấp | Orchestrator, handoff, trace và crash suite |
 
 Gợi ý chia vai:
@@ -34,7 +34,7 @@ Gợi ý chia vai:
 | Người | Vai | Commit | Test đã thêm hoặc sửa |
 | --- | --- | --- | --- |
 | Nguyễn Anh Tú | Điều phối, workflow, tích hợp | `a69f265`, `96c9dc1`, `15f3011`, `881536e`, `59bf772`, `6927f48`, `8e56c37`, `46e29ec` | Thêm/mở rộng `test_shape_trace_privacy.py`; sửa selector CP2 trong `test_public_matrix.py` |
-| Đăng Thùy Dung | Single agent / ReAct, benchmark | Chờ commit | `test_shape_trace_privacy.py` — single (cần review/commit cá nhân) |
+| Đăng Thùy Dung | Single agent / ReAct, benchmark | `a69f265` (single.py), `1c33f34` (test, báo cáo) | `src/tests/test_single_react.py` (tool chỉ đọc, trần 8 bước, bỏ qua delay trong ticket, trace không lộ secret) |
 | Trần Thành Vinh | Orchestrator, handoff, trace, crash suite | Chờ commit | `test_shape_trace_privacy.py` — orchestrator (cần review/commit cá nhân) |
 
 ## Cá nhân
@@ -81,11 +81,11 @@ Sao chép mục dưới đây cho từng thành viên.
 
 ### Đóng góp cụ thể
 
-- Cần ghi commit và test đã thêm/sửa sau khi hoàn thành.
+- Viết `src/lab8/shapes/single.py` (push chung trong commit `a69f265`); thêm `src/tests/test_single_react.py` (39 test); chạy lại benchmark, xác nhận khớp `reports/benchmark.json`; cung cấp số liệu benchmark cho research card và ADR.
 
 ### Bằng chứng
 
-- Cần bổ sung sau khi commit.
+- Báo cáo chi tiết: `report/team/2A202604116_DangThuyDung.md`.
 
 ## 2A202603821_TranThanhVinh
 
