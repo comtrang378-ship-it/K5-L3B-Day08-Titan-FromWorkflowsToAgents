@@ -17,19 +17,19 @@ Phần này nối tiếp phần mini research ở buổi lý thuyết (slide 62�
 
 | Field | Hướng dẫn | Nhóm điền |
 | --- | --- | --- |
-| CÂU | R1 / R2 / R3 / R4 | R1 · Scaling: task claims chủ yếu tuần tự; thêm investigator (single → orchestrator) có tăng pass rate không, hay chỉ tăng cost/success? |
-| SOURCE | Paper/blog, năm, URL, loại bằng chứng (benchmark, production report, blog kinh nghiệm) | Google Research 2026, *Towards a Science of Scaling Agent Systems* (thư viện tham khảo slide 68–69; URL theo slide). Loại bằng chứng: benchmark có kiểm soát trên nhiều cấu hình agent |
-| CLAIM | Một kết luận gốc của nguồn. Không viết rộng hơn phạm vi paper | Multi-agent chỉ có lợi khi task chia song song được; với task tuần tự, các biến thể multi-agent trong nghiên cứu giảm hiệu năng 39–70% (theo docs/bonus_topics.md, B1) |
-| BOUNDARY | Model / dataset / setup giới hạn kết luận đó | Kết luận đo trên LLM thật và bộ task của paper. Lab dùng MockLLM, 14 claim public, giá mô phỏng, không đo latency; nên chỉ kiểm được chiều pass rate và cost/success, không kiểm được con số 39–70% |
-| HYPOTHESIS | Nếu đổi shape A→B (hoặc bật/tắt một thành phần), metric X sẽ đổi theo hướng nào, khoảng bao nhiêu | Claims flow là chuỗi phụ thuộc lookup_order → compute_compensation → issue_refund. Đổi single → orchestrator (thêm lớp investigator đọc) thì pass rate không tăng (giữ ~1.000), còn cost/success tăng khoảng +50% đến +100% do số tool call tăng gần gấp đôi |
-| METHOD | Biến giữ cố định: model, tools, seed, corpus, giá, evaluator. Biến duy nhất được thay đổi: … | Cố định: MockLLM, tool manifest v1.1, seed 11/22/33/44/55, data/public_claims.jsonl (14 claim), config/pricing.yaml, evaluator lab8.metrics, SQLite mới cho mỗi trial. Biến duy nhất được thay đổi: topology single (1 agent ReAct) → orchestrator (orchestrator + investigator chỉ đọc) |
-| FAILURE / METRIC | Một lỗi dự kiến và cách đo nó: pass rate, pass^5, variance, cost/success, leak, bypass | Lỗi dự kiến: handoff làm rơi dữ kiện cần cho quote (order view) → quote sai hoặc escalated. Đo bằng pass rate, pass^5, seed variance, cost/success, mean tool calls; safety: crash 20/20, không lộ CANARY_SECRET |
+| CÂU | R1 / R2 / R3 / R4 | R4 — Evaluation confounders |
+| SOURCE | Paper/blog, năm, URL, loại bằng chứng (benchmark, production report, blog kinh nghiệm) | Liu et al., “AgentBench: Evaluating LLMs as Agents,” ICLR 2024, https://arxiv.org/abs/2308.03688 — benchmark nghiên cứu trên 8 môi trường tương tác. |
+| CLAIM | Một kết luận gốc của nguồn. Không viết rộng hơn phạm vi paper | Tác giả xây dựng benchmark gồm 8 môi trường để đánh giá khả năng reasoning và decision-making của LLM khi làm agent; abstract báo cáo hiệu năng khác nhau giữa các nhóm model và nêu các dạng khó khăn như reasoning dài hạn, ra quyết định và instruction following. |
+| BOUNDARY | Model / dataset / setup giới hạn kết luận đó | Kết quả của AgentBench áp dụng cho model, prompt, môi trường và tác vụ trong benchmark của paper; không trực tiếp dự đoán kết quả của workflow xử lý claim LogiX-VN hoặc MockLLM. |
+| HYPOTHESIS | Nếu đổi shape A→B (hoặc bật/tắt một thành phần), metric X sẽ đổi theo hướng nào, khoảng bao nhiêu | Workflow so với orchestrator sẽ có pass rate gần như nhau (chênh không quá 0.02) trên public set, nhưng workflow giảm cost/success khoảng 35–55% nhờ ít model/tool orchestration hơn. |
+| METHOD | Biến giữ cố định: model, tools, seed, corpus, giá, evaluator. Biến duy nhất được thay đổi: … | So sánh workflow và orchestrator; giữ MockLLM, tool registry, pricing, 14 public claim, seed 11/22/33/44/55, as_of và evaluator cố định. Biến so sánh là shape. Số model/tool call được đo như kết quả của kiến trúc, không giữ cố định. Mỗi trial dùng SQLite mới. |
+| FAILURE / METRIC | Một lỗi dự kiến và cách đo nó: pass rate, pass^5, variance, cost/success, leak, bypass | Rủi ro là ticket chứa chỉ dẫn/số ngày gây quyết định sai hoặc một trace không hợp lệ. Đo pass rate, pass^5, seed min–max/variance, cost/success và steps; ma trận trial cũng kiểm tra contract, policy denial và trace. |
 
 ## Kết quả ablation
 
-- Lệnh đã chạy (copy nguyên văn): `python -m lab8.benchmark --shapes workflow,single,orchestrator,swarm --cases data/public_claims.jsonl --seeds 11,22,33,44,55 --out reports/benchmark.json` (trong `src/`)
-- Run id / file report: `src/reports/benchmark.json`; ví dụ `R-single-C-001-s11`, `R-orchestrator-C-001-s11`
-- Kết quả so với hypothesis (đúng / sai / không kết luận được), kèm số liệu: **Đúng** trên bộ public. Pass rate single 1.000 → orchestrator 1.000 (pass^5 1.000 → 1.000, variance 0 → 0): không tăng độ đúng. Cost/success 29.38 → 56.46 VND (+92%), mean tool calls 2.79 → 5.57, mean steps 3.79 → 4.71. Lỗi dự kiến (rơi dữ kiện qua handoff) không xảy ra trên 70 trial. Đối chứng thêm: workflow 1.000 / 27.86 VND, swarm 0.986 / 49.57 VND (fail `R-swarm-C-002-s55`, tin delay trong ticket).
-- Giới hạn: MockLLM không phải model sản xuất, latency là `unavailable`. Pass rate đã chạm trần 1.000 nên ablation không phân biệt được độ đúng giữa hai topology; mức +92% chi phí phụ thuộc bảng giá mô phỏng (10 VND/tool call). Hai shape khác nhau cả số model call (2.71 so với 0.93/trial), không chỉ topology. Kết luận có thể đảo nếu bộ hidden có claim cần nhiều nguồn đọc độc lập mà một agent ReAct 8 bước bỏ sót.
+- Lệnh đã chạy (copy nguyên văn): `python -m lab8.benchmark --shapes workflow,orchestrator --cases data/public_claims.jsonl --seeds 11,22,33,44,55 --out reports/ablation_r4.json`
+- Run id / file report: `R-workflow-C-001-s11`, `R-orchestrator-C-001-s11`; `src/reports/ablation_r4.json`.
+- Kết quả so với hypothesis (đúng / sai / không kết luận được), kèm số liệu: Hypothesis được ủng hộ trên public set: cả hai pass rate và pass^5 đều 1.000, seed variance 0; workflow cost/success 27.86 VND so với orchestrator 56.46 VND, giảm khoảng 50.7%. Mean/p95 steps lần lượt 3.79/4 và 4.71/5. Đây là kết quả mô phỏng, không phải ước lượng thống kê cho production.
+- Giới hạn: MockLLM không phải model sản xuất, latency là `unavailable`.
 
 Muốn đi xa hơn một ablation để lấy điểm cộng thì xem [docs/bonus_topics.md](../../docs/bonus_topics.md).

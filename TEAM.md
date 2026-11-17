@@ -5,7 +5,7 @@
 - Tên nhóm: Titan
 - Lớp: L3B
 - Repo nhóm: `K5-L3B-DAY08-Titan-FromWorkflowsToAgents` (xem [SUBMISSION.md](SUBMISSION.md))
-- URL repo, nhánh nộp, commit chốt: Chưa xác nhận
+- URL repo, nhánh nộp, commit đối chiếu: [GitHub](https://github.com/comtrang378-ship-it/K5-L3B-Day8-Titan-From-Workflows-to-Agents), nhánh `main`; shape/benchmark `a69f265`, selector CP2 `96c9dc1`, test privacy/CP4 `15f3011` và `881536e`.
 
 ## Thành viên
 
@@ -33,9 +33,9 @@ Gợi ý chia vai:
 
 | Người | Vai | Commit | Test đã thêm hoặc sửa |
 | --- | --- | --- | --- |
-| Nguyễn Anh Tú | Điều phối, workflow, tích hợp | Chờ commit | Cần bổ sung test workflow |
+| Nguyễn Anh Tú | Điều phối, workflow, tích hợp | `a69f265`, `96c9dc1`, `15f3011`, `881536e`, `59bf772`, `6927f48`, `8e56c37`, `46e29ec` | Thêm/mở rộng `test_shape_trace_privacy.py`; sửa selector CP2 trong `test_public_matrix.py` |
 | Đăng Thùy Dung | Single agent / ReAct, benchmark | `a69f265` (single.py), `1c33f34` (test, báo cáo) | `src/tests/test_single_react.py` (tool chỉ đọc, trần 8 bước, bỏ qua delay trong ticket, trace không lộ secret) |
-| Trần Thành Vinh | Orchestrator, handoff, trace, crash suite | Chờ commit | Cần bổ sung test orchestrator/handoff |
+| Trần Thành Vinh | Orchestrator, handoff, trace, crash suite | Chờ commit | `test_shape_trace_privacy.py` — orchestrator (cần review/commit cá nhân) |
 
 ## Cá nhân
 
@@ -57,11 +57,21 @@ Sao chép mục dưới đây cho từng thành viên.
 
 ### Đóng góp cụ thể
 
-- Cần ghi commit và test đã thêm/sửa sau khi hoàn thành.
+- **CP0–CP1:** điều phối thông tin nhóm/lớp/vai trò, đọc contract và business rules; xác minh smoke/test trên workspace Windows/Python 3.12.10, không đại diện cho máy riêng của thành viên khác.
+- **CP2:** triển khai `workflow`, `single`, `orchestrator`; giữ model ở quyền đọc, dùng `compute_compensation` làm nguồn quote và để host kiểm approval/cap/idempotency trước khi ghi. Sửa selector `-k single` để chạy đúng 62 test shape.
+- **CP3:** truyền `crash_at` tới host và để crash đi qua luồng resume; dùng handoff allowlist, ghi trace đã sanitize; chạy buggy workflow demo để minh họa vì sao checkpoint đơn lẻ không thay ledger/idempotency.
+- **CP4:** thêm/mở rộng privacy regression test cho ticket, secret, phone, address, internal note và item name; chạy crash 20/20 cùng kiểm tra approval, trace, crash-resume và order cap.
+- **CP5:** chạy benchmark 4 shape × 14 public claim × 5 seed và ablation workflow–orchestrator; cập nhật ADR, research card, báo cáo nhóm/cá nhân. Kết luận chọn workflow giới hạn ở public corpus; hidden pack không có trong workspace.
+- **Demo:** tạo [report/team/demo.html](report/team/demo.html), bộ slide sáu trang giải thích kiến trúc, live claim, trace, benchmark và reliability/evaluation.
+- Commits: `a69f265` (shape/evidence), `96c9dc1` (selector), `15f3011` (privacy/ablation/report), `881536e` (CP4), `59bf772` (metadata), `6927f48` / `8e56c37` (demo), `46e29ec` (bổ sung hồ sơ cá nhân).
 
 ### Bằng chứng
 
-- Cần bổ sung sau khi commit.
+- `python -m lab8.smoke`: pass; `python -m pytest -q`: 57 passed.
+- `python -m pytest -q -m student -o addopts=`: 248 passed; crash suite 20/20.
+- Test mới: `src/tests/test_shape_trace_privacy.py`.
+- CP2 selectors: từng shape đều 62 passed; chi tiết trong báo cáo cá nhân.
+- CP3 demo: `python -m lab8.demo.buggy_workflow` cho thấy cách dùng checkpoint đơn lẻ tạo hai refund rows thay vì một.
 
 ## 2A202604116_DangThuyDung
 
@@ -71,7 +81,7 @@ Sao chép mục dưới đây cho từng thành viên.
 
 ### Đóng góp cụ thể
 
-- Viết `src/lab8/shapes/single.py` (push chung trong commit `a69f265`); thêm `src/tests/test_single_react.py` (39 test); chạy lại benchmark, xác nhận khớp `reports/benchmark.json`; điền `research_card.md`.
+- Viết `src/lab8/shapes/single.py` (push chung trong commit `a69f265`); thêm `src/tests/test_single_react.py` (39 test); chạy lại benchmark, xác nhận khớp `reports/benchmark.json`; cung cấp số liệu benchmark cho research card và ADR.
 
 ### Bằng chứng
 

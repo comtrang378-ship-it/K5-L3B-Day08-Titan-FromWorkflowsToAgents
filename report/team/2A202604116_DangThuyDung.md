@@ -29,7 +29,7 @@
   - `test_single_ignores_delay_written_in_ticket`: C-002 (ticket ghi trễ 5 ngày, order row 2 ngày) → `denied` ở cả 5 seed, kể cả seed 55 là seed swarm tham chiếu fail.
   - `test_single_trace_has_no_secret_or_ticket_text`: trace và kết quả không chứa `CANARY_SECRET` hay nguyên văn ticket; `run_id` trong trace khớp kết quả.
 - Chạy lại benchmark và so với `src/reports/benchmark.json` đã commit: trùng khớp hoàn toàn (bỏ qua timestamp), tức số liệu tái lập được.
-- Điền `report/team/research_card.md` (R1, ablation single → orchestrator) từ số liệu benchmark.
+- Tổng hợp số liệu benchmark (pass rate, pass^5, variance, cost/success theo shape) để nhóm dùng cho ADR và research card. Nhóm chốt research card theo câu R4 do Nguyễn Anh Tú điền (`src/reports/ablation_r4.json`).
 
 ## 4. Bằng chứng
 
