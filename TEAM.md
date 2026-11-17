@@ -13,7 +13,7 @@
 | --: | ------ | ---- | ----- | ------ | ------- |
 | 1 | Nguyễn Anh Tú | 2A202604088 | comtrang378@gmail.com | [comtrang378-ship-it](https://github.com/comtrang378-ship-it) | Điều phối, workflow và tích hợp |
 | 2 | Đăng Thùy Dung | 2A202604116 | Chưa cung cấp | Chưa cung cấp | Single agent / ReAct và benchmark |
-| 3 | Trần Thành Vinh | 2A202603821 | Chưa cung cấp | Chưa cung cấp | Orchestrator, handoff, trace và crash suite |
+| 3 | Trần Thành Vinh | 2A202603821 | 26ai.vinhtt@vinuni.edu.vn | [vinhs0](https://github.com/vinhs0) | Orchestrator, handoff, trace và crash suite |
 
 Gợi ý chia vai:
 
@@ -35,7 +35,7 @@ Gợi ý chia vai:
 | --- | --- | --- | --- |
 | Nguyễn Anh Tú | Điều phối, workflow, tích hợp | Chờ commit | Cần bổ sung test workflow |
 | Đăng Thùy Dung | Single agent / ReAct, benchmark | Chờ commit | Cần bổ sung test single |
-| Trần Thành Vinh | Orchestrator, handoff, trace, crash suite | Chờ commit | Cần bổ sung test orchestrator/handoff |
+| Trần Thành Vinh | Orchestrator, handoff, trace, crash suite | Chờ commit (nhánh `TranThanhVinh`: trace allowlist trong `orchestrator.py`) | `src/tests/test_orchestrator_handoff.py` (19 test: handoff allowlist, chặn tool ghi, trace/result không lộ secret-PII, crash rồi chạy lại chỉ 1 refund) |
 
 ## Cá nhân
 
@@ -85,8 +85,10 @@ Sao chép mục dưới đây cho từng thành viên.
 
 ### Đóng góp cụ thể
 
-- Cần ghi commit và test đã thêm/sửa sau khi hoàn thành.
+- `orchestrator.py`: trace chỉ ghi field allowlist (`_trace_order`, `_trace_history`, `_trace_quote`); handoff chỉ có tool đọc; truyền quote đầy đủ và `crash_at` vào `durability.issue_refund`.
+- Thêm `src/tests/test_orchestrator_handoff.py` (19 test).
 
 ### Bằng chứng
 
-- Cần bổ sung sau khi commit.
+- Cổng host 54 passed; `-m student -k orchestrator` 81 passed; crash suite 20/20; crash theo shape orchestrator 17/17 điểm.
+- Chi tiết: [report/team/2A202603821_TranThanhVinh.md](report/team/2A202603821_TranThanhVinh.md). Commit hash: chờ commit.

@@ -31,6 +31,40 @@ from lab8.tools import get_claim_view, tool_cost
 from lab8.trace import Trace
 
 
+_TRACE_ORDER_FIELDS = (
+    "order_id",
+    "status",
+    "delay_days",
+    "shipping_fee_vnd",
+    "paid_vnd",
+    "damage_verified",
+    "carrier",
+)
+_TRACE_QUOTE_FIELDS = ("amount_vnd", "reason", "clause_ids", "parts")
+
+
+def _trace_order(result: dict) -> dict:
+    """Explicit allowlist of order fields for the trace (no phone/address/notes/items)."""
+    out = {"visible": bool(result.get("visible")), "reason": result.get("reason")}
+    if result.get("order_id"):
+        out["order_id"] = result["order_id"]
+    order = result.get("order") or {}
+    if order:
+        out["order"] = {k: order[k] for k in _TRACE_ORDER_FIELDS if k in order}
+    return out
+
+
+def _trace_history(result: dict | None) -> dict | None:
+    if result is None:
+        return None
+    keys = ("visible", "reason", "order_id", "refund_count", "refunded_vnd")
+    return {k: result[k] for k in keys if k in result}
+
+
+def _trace_quote(result: dict) -> dict:
+    return {k: result[k] for k in _TRACE_QUOTE_FIELDS if k in result}
+
+
 def run_claim(
     claim_id: str,
     *,
@@ -123,11 +157,13 @@ def _run(
         "investigation",
         {
             "claim_view": investigated["claim_view"],
-            "lookup_order": order_result,
+            "lookup_order": _trace_order(order_result),
             "policy_count": len(
                 investigated["tools"].get("lookup_policy", {}).get("policies", [])
             ),
-            "refund_history": investigated["tools"].get("lookup_refund_history"),
+            "refund_history": _trace_history(
+                investigated["tools"].get("lookup_refund_history")
+            ),
         },
     )
     if not order_result.get("visible"):
@@ -146,7 +182,7 @@ def _run(
 
     quote = investigated["tools"]["compute_compensation"]
     proposal = int(quote["amount_vnd"])
-    trace.add("quote", quote)
+    trace.add("quote", safe_dump(_trace_quote(quote)))
     if proposal <= 0:
         trace.add("decision", {"status": "denied"})
         return finish(
