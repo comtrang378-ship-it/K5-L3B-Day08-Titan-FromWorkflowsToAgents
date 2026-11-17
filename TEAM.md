@@ -33,7 +33,7 @@ Gợi ý chia vai:
 
 | Người | Vai | Commit | Test đã thêm hoặc sửa |
 | --- | --- | --- | --- |
-| Nguyễn Anh Tú | Điều phối, workflow, tích hợp | `a69f265`, `96c9dc1`, `15f3011`, `881536e`, `59bf772` | `test_shape_trace_privacy.py`; selector CP2 trong `test_public_matrix.py` |
+| Nguyễn Anh Tú | Điều phối, workflow, tích hợp | `a69f265`, `96c9dc1`, `15f3011`, `881536e`, `59bf772`, `6927f48`, `8e56c37`, `46e29ec` | Thêm/mở rộng `test_shape_trace_privacy.py`; sửa selector CP2 trong `test_public_matrix.py` |
 | Đăng Thùy Dung | Single agent / ReAct, benchmark | Chờ commit | `test_shape_trace_privacy.py` — single (cần review/commit cá nhân) |
 | Trần Thành Vinh | Orchestrator, handoff, trace, crash suite | Chờ commit | `test_shape_trace_privacy.py` — orchestrator (cần review/commit cá nhân) |
 
@@ -57,7 +57,13 @@ Sao chép mục dưới đây cho từng thành viên.
 
 ### Đóng góp cụ thể
 
-- Commits `a69f265`, `96c9dc1`, `15f3011`, `881536e`, `59bf772` lần lượt chứa shape/evidence, selector CP2, privacy test/ablation, kiểm tra CP4 và cập nhật hồ sơ.
+- **CP0–CP1:** điều phối thông tin nhóm/lớp/vai trò, đọc contract và business rules; xác minh smoke/test trên workspace Windows/Python 3.12.10, không đại diện cho máy riêng của thành viên khác.
+- **CP2:** triển khai `workflow`, `single`, `orchestrator`; giữ model ở quyền đọc, dùng `compute_compensation` làm nguồn quote và để host kiểm approval/cap/idempotency trước khi ghi. Sửa selector `-k single` để chạy đúng 62 test shape.
+- **CP3:** truyền `crash_at` tới host và để crash đi qua luồng resume; dùng handoff allowlist, ghi trace đã sanitize; chạy buggy workflow demo để minh họa vì sao checkpoint đơn lẻ không thay ledger/idempotency.
+- **CP4:** thêm/mở rộng privacy regression test cho ticket, secret, phone, address, internal note và item name; chạy crash 20/20 cùng kiểm tra approval, trace, crash-resume và order cap.
+- **CP5:** chạy benchmark 4 shape × 14 public claim × 5 seed và ablation workflow–orchestrator; cập nhật ADR, research card, báo cáo nhóm/cá nhân. Kết luận chọn workflow giới hạn ở public corpus; hidden pack không có trong workspace.
+- **Demo:** tạo [report/team/demo.html](report/team/demo.html), bộ slide sáu trang giải thích kiến trúc, live claim, trace, benchmark và reliability/evaluation.
+- Commits: `a69f265` (shape/evidence), `96c9dc1` (selector), `15f3011` (privacy/ablation/report), `881536e` (CP4), `59bf772` (metadata), `6927f48` / `8e56c37` (demo), `46e29ec` (bổ sung hồ sơ cá nhân).
 
 ### Bằng chứng
 

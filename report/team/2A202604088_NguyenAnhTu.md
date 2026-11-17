@@ -36,9 +36,14 @@ SQLite Ledger
 
 ## 3. Đóng góp cụ thể
 
-- Commits: `a69f265` triển khai shape/evidence; `96c9dc1` sửa selector CP2; `15f3011` thêm trace test/ablation/report; `881536e` hoàn thiện kiểm tra CP4; `59bf772` lưu metadata CP4.
-- Quyết định kỹ thuật: giữ quyết định tiền trong `compute_compensation` và để `durability.issue_refund` kiểm approval/cap/idempotency; không dùng nội dung ticket làm policy input.
-- Kiểm thử hồi quy `src/tests/test_shape_trace_privacy.py` được thêm trong `15f3011` và mở rộng CP4 trong `881536e`.
+- **CP0–CP1 — Điều phối và contract:** xác nhận nhóm Titan thuộc lớp L3B, ghi thông tin/vai trò vào `TEAM.md`, cài và kiểm tra trên workspace Windows/Python 3.12.10. Đọc business rules, contracts và shape swarm tham chiếu trước khi triển khai. Smoke và test suite được chạy trên workspace này; không khẳng định đã xác minh môi trường riêng của các thành viên khác.
+- **CP2 — Ba shape:** triển khai `workflow`, `single` và `orchestrator` trong `src/lab8/shapes/`. Workflow chạy các bước Python cố định; single dùng ReAct tối đa 8 bước với tool chỉ đọc; orchestrator tạo handoff allowlist cho investigator chỉ đọc. Cả ba dùng `finish()` ở các nhánh kết quả, ghi trace theo contract, tính tiền bằng `compute_compensation` và chỉ gọi host để thực hiện refund. `96c9dc1` đổi tên test ma trận chung để lệnh `-k single` chỉ chọn đúng 62 test của shape single.
+- **CP3 — Handoff và crash:** truyền `crash_at` tới `durability.issue_refund`, để `InjectedCrash` đi qua đúng luồng crash/resume và ghi trace crash; handoff của orchestrator chỉ mang dữ liệu/tool được allowlist, không chuyển parent context hoặc secret. Chạy `python -m lab8.demo.buggy_workflow` để minh họa checkpoint đơn lẻ có thể tạo hai refund rows thay vì một ledger effect idempotent.
+- **CP4 — Approval, idempotency và privacy:** thêm `src/tests/test_shape_trace_privacy.py` trong `15f3011`, mở rộng trong `881536e`. Test đưa marker vào ticket, parent secret, phone, address, internal note và item name, rồi kiểm tra trace, RunResult và stdout của cả ba shape. Chạy crash suite 20/20, cùng các test approval/order-cap, trace và crash-resume được liệt kê ở mục 4. Không tuyên bố kết quả hidden vì hidden pack không có trong workspace.
+- **CP5 — Đánh giá và quyết định:** chạy benchmark public 4 shape × 14 claim × 5 seed và ablation workflow–orchestrator; cập nhật `benchmark.json`, `ablation_r4.json`, ADR, research card, báo cáo nhóm, bảng đóng góp và báo cáo cá nhân. Chọn workflow cho public workload: pass rate 1.000, variance 0, cost/success mô phỏng 27.86 VND; đây không phải kết luận cho hidden pack hay production.
+- **Demo nhóm:** tạo slide deck độc lập tại [demo.html](./demo.html), gồm kiến trúc, live run C-001, trace, benchmark và reliability/evaluation; số liệu/giới hạn hidden được trình bày cùng bằng chứng public.
+
+Các commit thể hiện những phần việc trên: `a69f265` triển khai ba shape và evidence; `96c9dc1` sửa selector CP2; `15f3011` thêm privacy test, ablation và cập nhật báo cáo; `881536e` mở rộng kiểm tra CP4; `59bf772` lưu metadata CP4; `6927f48` và `8e56c37` hoàn thiện slide demo và vị trí file; `46e29ec` bổ sung nội dung báo cáo cá nhân.
 
 ## 4. Bằng chứng
 

@@ -5,7 +5,7 @@
 - Tên nhóm: Titan
 - Lớp: L3B
 - Thành viên và phân công: xem [TEAM.md](../../TEAM.md).
-- Commits: `a69f265` (shape/public benchmark/crash), `96c9dc1` (CP2 test selector), `15f3011` (privacy test/ablation), `881536e` (CP4 tests), `59bf772` (evidence metadata), `bd8f5a7` (CP0–CP5 report update).
+- Commits: `a69f265` (shape/public benchmark/crash), `96c9dc1` (CP2 test selector), `15f3011` (privacy test/ablation), `881536e` (CP4 tests), `59bf772` (evidence metadata), `bd8f5a7` (CP0–CP5 report update), `6927f48` / `8e56c37` (demo slide deck), `46e29ec` (bổ sung báo cáo cá nhân).
 - CP1 trên workspace này: Python 3.12.10 / Windows; smoke pass; host suite khi setup 54 passed; TEAM có thành viên và vai trò. Không thể xác minh smoke trên máy riêng của các thành viên khác.
 
 ## Tiến độ theo checkpoint
@@ -52,7 +52,16 @@ Starter ban đầu để ba shape ở dạng stub; khi chưa cài đặt, các t
 
 ## 6. Tổng hợp đóng góp
 
-Phân công theo shape và đầu việc được ghi trong [TEAM.md](../../TEAM.md). Kiểm thử hồi quy `src/tests/test_shape_trace_privacy.py` bao phủ cả ba shape và CP2 selector được kiểm trong `src/tests/test_public_matrix.py`. Lịch sử hiện tại ghi các commit triển khai/tích hợp của Nguyễn Anh Tú; chưa xác minh được commit kỹ thuật riêng của Đăng Thùy Dung hay Trần Thành Vinh. Báo cáo cá nhân của hai thành viên này và khai báo công cụ AI/tự đánh giá vẫn cần chính họ cung cấp; không suy đoán thay.
+### Nguyễn Anh Tú — điều phối, workflow và tích hợp
+
+- CP0–CP1: xác nhận nhóm/lớp và vai trò trong [TEAM.md](../../TEAM.md); đọc contract, business rules và shape swarm tham chiếu; chạy smoke/test trên Windows/Python 3.12.10 của workspace này.
+- CP2: commit `a69f265` triển khai ba shape. Workflow là chuỗi bước cố định; single giới hạn ReAct ở 8 bước và tool đọc; orchestrator dùng handoff allowlist cho investigator chỉ đọc. Cả ba ghi trace đúng contract, dùng `compute_compensation` và chuyển quote đầy đủ sang host.
+- CP3: truyền `crash_at`, không nuốt `InjectedCrash`, giữ host làm write gate; handoff/trace không đưa parent context thô qua ranh giới. Demo buggy workflow cho thấy checkpoint đơn lẻ không bảo đảm exactly-once.
+- CP4: thêm và mở rộng `src/tests/test_shape_trace_privacy.py`; chạy crash suite 20/20 cùng nhóm test approval, trace, crash-resume và order cap.
+- CP5: tạo benchmark public và ablation workflow–orchestrator, ghi ADR/research card và cập nhật báo cáo. Kết luận chọn workflow chỉ giới hạn ở public corpus; hidden pack không có trong workspace.
+- Demo: tạo slide deck [demo.html](./demo.html), bao gồm architecture, live claim, trace, benchmark và reliability/evaluation.
+
+Các bằng chứng chi tiết và lệnh chạy nằm trong [báo cáo cá nhân Nguyễn Anh Tú](./2A202604088_NguyenAnhTu.md). Phân công vai trò không được xem là bằng chứng hoàn thành: hiện chưa xác minh được commit kỹ thuật riêng của Đăng Thùy Dung hay Trần Thành Vinh. Báo cáo cá nhân, khai báo công cụ AI và tự đánh giá của hai thành viên này vẫn cần chính họ cung cấp; không suy đoán thay.
 
 ## 7. Hạn chế và hướng cải thiện
 
