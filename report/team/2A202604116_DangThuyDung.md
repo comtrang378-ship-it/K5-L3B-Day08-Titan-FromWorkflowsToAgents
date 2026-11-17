@@ -5,7 +5,7 @@
 - Họ tên: Đăng Thùy Dung
 - MSSV: 2A202604116
 - Email: (tự điền)
-- GitHub: (tự điền)
+- GitHub: [dtdung14](https://github.com/dtdung14)
 
 ## 2. Phần việc phụ trách
 
