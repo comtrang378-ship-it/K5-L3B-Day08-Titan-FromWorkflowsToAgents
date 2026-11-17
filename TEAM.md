@@ -5,7 +5,7 @@
 - Tên nhóm: Titan
 - Lớp: L3B
 - Repo nhóm: `K5-L3B-DAY08-Titan-FromWorkflowsToAgents` (xem [SUBMISSION.md](SUBMISSION.md))
-- URL repo, nhánh nộp, commit chốt: [GitHub](https://github.com/comtrang378-ship-it/K5-L3B-Day8-Titan-From-Workflows-to-Agents), nhánh `main`; commit hồ sơ cuối sẽ ghi sau khi commit.
+- URL repo, nhánh nộp, commit đối chiếu: [GitHub](https://github.com/comtrang378-ship-it/K5-L3B-Day8-Titan-From-Workflows-to-Agents), nhánh `main`; shape `a69f265`, test/báo cáo `15f3011`.
 
 ## Thành viên
 
@@ -33,7 +33,7 @@ Gợi ý chia vai:
 
 | Người | Vai | Commit | Test đã thêm hoặc sửa |
 | --- | --- | --- | --- |
-| Nguyễn Anh Tú | Điều phối, workflow, tích hợp | `a69f265` (shape); test mới chờ commit | `test_shape_trace_privacy.py` — workflow |
+| Nguyễn Anh Tú | Điều phối, workflow, tích hợp | `a69f265` (shape), `15f3011` (test/báo cáo) | `test_shape_trace_privacy.py` — workflow |
 | Đăng Thùy Dung | Single agent / ReAct, benchmark | Chờ commit | `test_shape_trace_privacy.py` — single (cần review/commit cá nhân) |
 | Trần Thành Vinh | Orchestrator, handoff, trace, crash suite | Chờ commit | `test_shape_trace_privacy.py` — orchestrator (cần review/commit cá nhân) |
 

@@ -5,7 +5,7 @@
 - Tên nhóm: Titan
 - Lớp: L3B
 - Thành viên và phân công: xem [TEAM.md](../../TEAM.md).
-- Commit hiện có cho code và benchmark: `a69f265`. Các báo cáo hoàn thiện trong lượt này chưa được commit.
+- Commit code shape và benchmark/crash: `a69f265`; commit test trace privacy, ablation và báo cáo: `15f3011`.
 - CP1 trên workspace này: Python 3.12.10 / Windows; smoke pass; host suite 57 passed; TEAM có thành viên và vai trò. Không thể xác minh smoke trên máy riêng của các thành viên khác.
 
 ## 2. Mục tiêu và cách tiếp cận
