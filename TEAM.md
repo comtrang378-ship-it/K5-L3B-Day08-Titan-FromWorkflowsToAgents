@@ -36,7 +36,7 @@ Gợi ý chia vai:
 | --- | --- | --- | --- |
 | Nguyễn Anh Tú | Điều phối, workflow, tích hợp | [workflow.py](src/lab8/shapes/workflow.py), [single.py](src/lab8/shapes/single.py), [orchestrator.py](src/lab8/shapes/orchestrator.py), [benchmark.json](src/reports/benchmark.json), [crash.json](src/reports/crash.json) (`a69f265`); [test_public_matrix.py](src/tests/test_public_matrix.py) (`96c9dc1`); [test_shape_trace_privacy.py](src/tests/test_shape_trace_privacy.py), [ablation_r4.json](src/reports/ablation_r4.json), [group_report.md](report/team/group_report.md), [research_card.md](report/team/research_card.md) (`15f3011`, `881536e`); [TEAM.md](TEAM.md), [báo cáo cá nhân](report/team/2A202604088_NguyenAnhTu.md) (`59bf772`, `46e29ec`); [demo.html](report/team/demo.html) (`6927f48`, `8e56c37`) | Thêm/mở rộng [test_shape_trace_privacy.py](src/tests/test_shape_trace_privacy.py); sửa selector CP2 trong [test_public_matrix.py](src/tests/test_public_matrix.py) |
 | Đăng Thùy Dung | Kiểm thử và benchmark | `1c33f34` (test, báo cáo), `e6b32cb` (merge PR #1), `14eca6e` (TEAM.md) | `src/tests/test_single_react.py` (tool chỉ đọc, trần 8 bước, bỏ qua delay trong ticket, trace không lộ secret) |
-| Trần Thành Vinh | Orchestrator, handoff, trace, crash suite | `2749e19` ([orchestrator.py](src/lab8/shapes/orchestrator.py): trace allowlist; [báo cáo cá nhân](report/team/2A202603821_TranThanhVinh.md)) | Thêm [test_orchestrator_handoff.py](src/tests/test_orchestrator_handoff.py) (19 test: handoff allowlist, chặn tool ghi, trace/result không lộ secret-PII, crash rồi chạy lại chỉ 1 refund) |
+| Trần Thành Vinh | Orchestrator, handoff, trace, crash suite | `2749e19` ([orchestrator.py](src/lab8/shapes/orchestrator.py): trace allowlist); `04fed9a` (orchestrator fail-closed, `run_claim` không ném exception); commit test durability; [báo cáo cá nhân](report/team/2A202603821_TranThanhVinh.md) | Thêm [test_orchestrator_handoff.py](src/tests/test_orchestrator_handoff.py) (19: handoff allowlist, chặn tool ghi, trace không lộ secret/PII), [test_orchestrator_robustness.py](src/tests/test_orchestrator_robustness.py) (10: fail-closed, ticket injection), [test_orchestrator_durability.py](src/tests/test_orchestrator_durability.py) (40: crash/resume, rerun idempotent, cổng approval) |
 
 ## Cá nhân
 
@@ -110,9 +110,10 @@ Sao chép mục dưới đây cho từng thành viên.
 ### Đóng góp cụ thể
 
 - `orchestrator.py`: trace chỉ ghi field allowlist (`_trace_order`, `_trace_history`, `_trace_quote`); handoff chỉ có tool đọc; truyền quote đầy đủ và `crash_at` vào `durability.issue_refund`.
-- Thêm `src/tests/test_orchestrator_handoff.py` (19 test).
+- `orchestrator.py` fail-closed: lỗi bất ngờ trả `failed` + trace sạch, chỉ ghi tên kiểu exception; vẫn ném lại `InjectedCrash`.
+- Thêm `test_orchestrator_handoff.py` (19), `test_orchestrator_robustness.py` (10), `test_orchestrator_durability.py` (40).
 
 ### Bằng chứng
 
-- Cổng host 54 passed; `-m student -k orchestrator` 81 passed; crash suite 20/20; crash theo shape orchestrator 17/17 điểm.
-- Chi tiết: [report/team/2A202603821_TranThanhVinh.md](report/team/2A202603821_TranThanhVinh.md). Commit hash: `2749e19`.
+- Cổng host 110 passed; ma trận student 317 passed; `-k orchestrator` 131 passed; crash suite 20/20; crash/resume qua orchestrator ở mọi claim có refund đều 1 refund + 1 audit.
+- Chi tiết: [report/team/2A202603821_TranThanhVinh.md](report/team/2A202603821_TranThanhVinh.md). Commit: `2749e19`, `04fed9a`, commit test durability.
