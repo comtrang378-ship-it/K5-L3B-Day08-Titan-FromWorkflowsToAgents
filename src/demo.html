@@ -86,7 +86,7 @@
 
     .progress > span {
       display: block;
-      width: 16.666%;
+      width: 14.286%;
       height: 100%;
       background: linear-gradient(90deg, var(--cyan), var(--blue));
       transition: width .25s ease;
@@ -283,6 +283,23 @@
     .chart-title { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; margin-bottom: 13px; }
     .chart-title strong { font-size: 15px; }
     .chart-title span { font-size: 11px; color: var(--muted); }
+    .benchmark-table-wrap {
+      overflow-x: auto;
+      margin-top: 14px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+    }
+    .benchmark-table { width: 100%; min-width: 760px; border-collapse: collapse; font-size: 12px; }
+    .benchmark-table th, .benchmark-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(42,64,89,.65);
+      text-align: right;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+    .benchmark-table th { color: var(--cyan); font-weight: 750; }
+    .benchmark-table th:first-child, .benchmark-table td:first-child { text-align: left; }
+    .benchmark-table tbody tr:last-child td { border-bottom: 0; }
     .bar-row {
       display: grid;
       grid-template-columns: 112px 1fr 68px;
@@ -364,7 +381,7 @@
         <div class="brand">LOGIX-VN <span style="color:var(--muted);font-weight:500">/ LAB 8</span></div>
         <div class="top-meta">
           <span class="pill">Demo offline · MockLLM</span>
-          <span id="top-count">01 / 06</span>
+          <span id="top-count">01 / 07</span>
         </div>
       </div>
       <div class="progress"><span id="progress"></span></div>
@@ -434,9 +451,38 @@
         </div>
       </section>
 
+      <section class="slide" aria-label="Bài toán và quy trình">
+        <div class="section-head">
+          <div class="eyebrow">02 · Task &amp; Process</div>
+          <h2>Hoàn claim đúng luật.<br><span class="accent">Không để ticket quyết định tiền.</span></h2>
+          <p>LogiX-VN cần xác định claim có được bồi hoàn phí vận chuyển hay không, tính đúng số tiền theo order và policy, rồi ghi nhận an toàn.</p>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <h3>Bài toán cần giải</h3>
+            <p>Với một claim giao hàng trễ, hệ thống phải đối chiếu dữ kiện đơn hàng, điều khoản nghiệp vụ, approval và khoản hoàn trước đó để trả đúng trạng thái và số tiền.</p>
+            <ul class="check-list">
+              <li>Ticket là input không tin cậy; nội dung yêu cầu hay chỉ dẫn trong ticket không thay thế dữ kiện order/policy.</li>
+              <li><code>compute_compensation</code> tính quote theo luật cố định; model không tự quyết định số tiền.</li>
+              <li>Chỉ host được ghi refund sau khi kiểm approval, cap theo order và idempotency.</li>
+            </ul>
+            <div class="boundary">Đầu ra mong đợi: đúng quyết định, không hoàn khi thiếu approval hợp lệ, không ghi trùng và trace không lộ dữ liệu nhạy cảm.</div>
+          </div>
+          <div class="card">
+            <h3>Quy trình chung cho bốn phương pháp</h3>
+            <div class="trace-event"><div class="num">1</div><div><strong>Nhận claim</strong><span>Đọc claim ID và trường đã lọc; giữ nguyên ranh giới với ticket thô.</span></div></div>
+            <div class="trace-event"><div class="num">2</div><div><strong>Thu thập dữ kiện</strong><span>Tra order, policy và lịch sử refund cần thiết qua read tools.</span></div></div>
+            <div class="trace-event"><div class="num">3</div><div><strong>Tính quote</strong><span>Code tính entitlement từ dữ kiện có cấu trúc; quote là số tiền đầy đủ.</span></div></div>
+            <div class="trace-event"><div class="num">4</div><div><strong>Host kiểm và ghi</strong><span><code>issue_refund</code> kiểm approval/cap/idempotency rồi ghi ledger + audit.</span></div></div>
+            <div class="trace-event"><div class="num">5</div><div><strong>Trả kết quả</strong><span>Trả RunResult và trace an toàn để evaluator đối chiếu.</span></div></div>
+          </div>
+        </div>
+        <div class="talk-track" style="margin-top:16px"><b>Điểm so sánh:</b> “Bốn shape nhận cùng claim, seed, business rules và evaluator; chúng khác cách điều phối và mức tự chủ, không khác quyền quyết tiền hay quyền ghi ledger.”</div>
+      </section>
+
       <section class="slide" aria-label="Live Demo">
         <div class="section-head">
-          <div class="eyebrow">02 · Live Demo</div>
+          <div class="eyebrow">03 · Live Demo</div>
           <h2>Chạy claim C-001<br><span class="accent">từ input đến ledger.</span></h2>
           <p>Ví dụ công khai: order trễ 4 ngày, phí ship 35.000 VND, approval hợp lệ 35.000 VND. Tạo database mới để demo lần đầu.</p>
         </div>
@@ -463,7 +509,7 @@
               <li><code>proposal_amount=35000</code>: quote đầy đủ, không phải tiền sau cap.</li>
               <li><code>refund_effects[0].amount_vnd=35000</code>: effect ghi vào ledger.</li>
               <li><code>idempotency_key=refund:C-001</code>: retry cùng claim không tạo effect thứ hai.</li>
-              <li><code>trace_path</code>: mở file JSON ở phần 03 để xem từng event.</li>
+              <li><code>trace_path</code>: mở file JSON ở phần 04 để xem từng event.</li>
             </ul>
             <div class="boundary">Live output lúc chuẩn bị: cost mô phỏng 30 VND. Benchmark cost/success khác vì tính trung bình trên 70 trial/shape, gồm cả claim cần mức tool khác nhau.</div>
           </div>
@@ -473,7 +519,7 @@
 
       <section class="slide" aria-label="Agent Trace">
         <div class="section-head">
-          <div class="eyebrow">03 · Agent Trace</div>
+          <div class="eyebrow">04 · Agent Trace</div>
           <h2>Bốn event. <span class="accent">Một quyết định có thể audit.</span></h2>
           <p>Trace thật từ run `R-workflow-C-001-s11`. Mở JSON trong `src/traces/` sau khi chạy lệnh live; đoạn bên cạnh là nội dung đã ghi.</p>
         </div>
@@ -522,50 +568,44 @@
 
       <section class="slide" aria-label="Benchmark">
         <div class="section-head">
-          <div class="eyebrow">04 · Benchmark</div>
+          <div class="eyebrow">05 · Benchmark</div>
           <h2>Cùng claims, seed và giá.<br><span class="accent">Đo cả chất lượng lẫn chi phí.</span></h2>
-          <p>14 public claims × 5 seed (11, 22, 33, 44, 55) = 70 trial mỗi shape. Giá là mô phỏng VND; latency không đo được.</p>
+          <p>Cùng 14 public claims × 5 seed (11, 22, 33, 44, 55), cùng evaluator và bảng giá: 70 trial mỗi shape. Giá là VND mô phỏng; latency không đo được.</p>
         </div>
-        <div class="grid-3">
-          <div class="card chart-panel">
-            <div class="chart-title"><strong>Pass rate ↑</strong><span>0–100%</span></div>
-            <div class="bar-row"><span>Workflow</span><div class="bar-track"><div class="bar" style="width:100%"></div></div><span class="bar-value">100%</span></div>
-            <div class="bar-row"><span>Single</span><div class="bar-track"><div class="bar" style="width:100%"></div></div><span class="bar-value">100%</span></div>
-            <div class="bar-row"><span>Orchestrator</span><div class="bar-track"><div class="bar" style="width:100%"></div></div><span class="bar-value">100%</span></div>
-            <div class="bar-row"><span>Swarm</span><div class="bar-track"><div class="bar orange" style="width:98.6%"></div></div><span class="bar-value">98.6%</span></div>
-            <div class="small">Swarm miss duy nhất: T02 / seed 55, tin số ngày trong ticket thay vì order.</div>
-          </div>
-          <div class="card chart-panel">
-            <div class="chart-title"><strong>Cost / success ↓</strong><span>VND mô phỏng</span></div>
-            <div class="bar-row"><span>Workflow</span><div class="bar-track"><div class="bar" style="width:49.3%"></div></div><span class="bar-value">27.86</span></div>
-            <div class="bar-row"><span>Single</span><div class="bar-track"><div class="bar blue" style="width:52%"></div></div><span class="bar-value">29.38</span></div>
-            <div class="bar-row"><span>Orchestrator</span><div class="bar-track"><div class="bar orange" style="width:100%"></div></div><span class="bar-value">56.46</span></div>
-            <div class="bar-row"><span>Swarm</span><div class="bar-track"><div class="bar orange" style="width:87.8%"></div></div><span class="bar-value">49.57</span></div>
-            <div class="small">Workflow thấp nhất trên public benchmark; đây không phải giá API thực tế.</div>
-          </div>
-          <div class="card chart-panel">
-            <div class="chart-title"><strong>Seed variance ↓</strong><span>lower = more stable</span></div>
-            <div class="bar-row"><span>Workflow</span><div class="bar-track"><div class="bar" style="width:0%"></div></div><span class="bar-value">0.000000</span></div>
-            <div class="bar-row"><span>Single</span><div class="bar-track"><div class="bar" style="width:0%"></div></div><span class="bar-value">0.000000</span></div>
-            <div class="bar-row"><span>Orchestrator</span><div class="bar-track"><div class="bar" style="width:0%"></div></div><span class="bar-value">0.000000</span></div>
-            <div class="bar-row"><span>Swarm</span><div class="bar-track"><div class="bar orange" style="width:100%"></div></div><span class="bar-value">0.000816</span></div>
-            <div class="small">Variance là phương sai population của 5 seed pass rates.</div>
-          </div>
+        <div class="benchmark-table-wrap" role="region" aria-label="Bảng so sánh kết quả benchmark" tabindex="0">
+          <table class="benchmark-table">
+            <thead>
+              <tr><th>Chỉ số</th><th>A. Workflow</th><th>B. Single</th><th>C. Orchestrator</th><th>D. Swarm</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Số lượt chạy</td><td>70</td><td>70</td><td>70</td><td>70</td></tr>
+              <tr><td>Số lượt thành công</td><td>70</td><td>70</td><td>70</td><td>69</td></tr>
+              <tr><td>Pass rate</td><td>100.00%</td><td>100.00%</td><td>100.00%</td><td>98.57%</td></tr>
+              <tr><td>Pass^5</td><td>100.00%</td><td>100.00%</td><td>100.00%</td><td>92.86%</td></tr>
+              <tr><td>Seed variance</td><td>0.000000</td><td>0.000000</td><td>0.000000</td><td>0.000816</td></tr>
+              <tr><td>Cost / success (VND mô phỏng)</td><td>27.86</td><td>29.38</td><td>56.46</td><td>49.57</td></tr>
+              <tr><td>Model calls trung bình / trial</td><td>0.00</td><td>2.71</td><td>0.93</td><td>3.00</td></tr>
+              <tr><td>Mean steps / trial</td><td>3.79</td><td>3.79</td><td>4.71</td><td>2.80</td></tr>
+            </tbody>
+          </table>
         </div>
-        <div class="grid-2" style="margin-top:13px">
-          <div class="metric-card"><span class="small">PASS^5 · mọi seed đều pass</span><strong>1.000</strong><div class="caption">Workflow, single, orchestrator. Swarm: 0.929.</div></div>
-          <div class="metric-card"><span class="small">Chọn kiến trúc theo dữ liệu</span><strong class="accent">Workflow</strong><div class="caption">Ít tự chủ nhất, pass rate ngang single/orchestrator và cost thấp nhất trên public set.</div></div>
+        <p class="small" style="margin-top:10px">Pass^5 = tỷ lệ claim pass ở cả 5 seed; seed variance là population variance của seed pass rates. Swarm có một lượt fail (T02 / seed 55: status resolved thay vì denied).</p>
+        <div class="grid-3" style="margin-top:12px">
+          <div class="metric-card"><span class="small">Ít tốn nhất</span><strong class="accent">Workflow</strong><div class="caption">27.86 VND/success, rẻ nhất trong khi đạt 100% pass rate.</div></div>
+          <div class="metric-card"><span class="small">Ít bước nhất</span><strong>Swarm · 2.80</strong><div class="caption">Có mean steps thấp nhất nhưng cost cao hơn workflow và có một lượt fail.</div></div>
+          <div class="metric-card"><span class="small">Kết luận trên public set</span><strong class="good">Chọn Workflow</strong><div class="caption">Ít tự chủ nhất mà vẫn đạt chất lượng ngang Single/Orchestrator; không suy rộng sang hidden hay production.</div></div>
         </div>
         <div class="source-row">
-          <a href="../../src/reports/benchmark.json">Full benchmark JSON</a>
-          <a href="../../src/reports/ablation_r4.json">Workflow vs orchestrator ablation</a>
-          <a href="../../docs/metrics.md">Metric definitions</a>
+          <a href="reports/benchmark.json">Full benchmark JSON</a>
+          <a href="reports/benchmark_comparison.md">Comparison report</a>
+          <a href="reports/ablation_r4.json">Workflow vs orchestrator ablation</a>
+          <a href="../docs/metrics.md">Metric definitions</a>
         </div>
       </section>
 
       <section class="slide" aria-label="Reliability and Evaluation">
         <div class="section-head">
-          <div class="eyebrow">05 · Reliability &amp; Evaluation</div>
+          <div class="eyebrow">06 · Reliability &amp; Evaluation</div>
           <h2>Không trả sai. Không ghi trùng.<br><span class="accent">Không lộ dữ liệu.</span></h2>
           <p>Safety không dựa vào lời hứa của agent: host là write gate; ledger/audit và scanner/test cung cấp bằng chứng độc lập.</p>
         </div>
@@ -622,7 +662,7 @@
       <div class="nav">
         <button id="prev" aria-label="Slide trước">←</button>
         <div class="dots" id="dots" aria-label="Chọn slide"></div>
-        <span class="slide-count" id="slide-count">01 / 06</span>
+        <span class="slide-count" id="slide-count">01 / 07</span>
         <button id="next" aria-label="Slide tiếp">→</button>
       </div>
       <span class="hint">Titan · K5 · L3B</span>
