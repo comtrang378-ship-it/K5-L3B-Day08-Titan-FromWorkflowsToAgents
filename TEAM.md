@@ -33,7 +33,7 @@ Gợi ý chia vai:
 
 | Người | Vai | Commit | Test đã thêm hoặc sửa |
 | --- | --- | --- | --- |
-| Nguyễn Anh Tú | Điều phối, workflow, tích hợp | `a69f265` (shape), `15f3011` (test/báo cáo) | `test_shape_trace_privacy.py` — workflow |
+| Nguyễn Anh Tú | Điều phối, workflow, tích hợp | `a69f265` (shape), `15f3011` (test/báo cáo), `881536e` (CP4) | `test_shape_trace_privacy.py` — workflow/CP4 |
 | Đăng Thùy Dung | Single agent / ReAct, benchmark | Chờ commit | `test_shape_trace_privacy.py` — single (cần review/commit cá nhân) |
 | Trần Thành Vinh | Orchestrator, handoff, trace, crash suite | Chờ commit | `test_shape_trace_privacy.py` — orchestrator (cần review/commit cá nhân) |
 
