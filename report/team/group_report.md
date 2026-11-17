@@ -5,7 +5,7 @@
 - Tên nhóm: Titan
 - Lớp: L3B
 - Thành viên và phân công: xem [TEAM.md](../../TEAM.md).
-- Commit code shape và benchmark/crash: `a69f265`; commit test trace privacy, ablation và báo cáo: `15f3011`.
+- Commits: `a69f265` (shape/public benchmark/crash), `96c9dc1` (CP2 test selector), `15f3011` (privacy test/ablation), `881536e` (CP4 tests), `59bf772` (evidence metadata).
 - CP1 trên workspace này: Python 3.12.10 / Windows; smoke pass; host suite 57 passed; TEAM có thành viên và vai trò. Không thể xác minh smoke trên máy riêng của các thành viên khác.
 
 ## 2. Mục tiêu và cách tiếp cận
@@ -37,11 +37,11 @@ Workflow được chọn vì đạt cùng độ chính xác public như single v
 
 ## 5. Khó khăn và cách xử lý
 
-Starter ban đầu để ba shape ở dạng stub; khi chưa cài đặt, các test student tương ứng được kỳ vọng thất bại. Sau khi hoàn thiện flow và truyền `crash_at` tới host, nhóm chạy lại smoke, host suite, toàn bộ ma trận student, crash suite và benchmark. Kết quả hiện tại: `lab8.smoke pass`, 54 host tests passed, 248 student tests passed và crash safety 20/20.
+Starter ban đầu để ba shape ở dạng stub; khi chưa cài đặt, các test student tương ứng được kỳ vọng thất bại. Sau khi hoàn thiện flow và truyền `crash_at` tới host, nhóm chạy lại smoke, host suite, toàn bộ ma trận student, crash suite và benchmark. Kết quả hiện tại: `lab8.smoke pass`, 57 host tests passed, 248 student tests passed và crash safety 20/20.
 
 ## 6. Tổng hợp đóng góp
 
-Phân công theo shape và đầu việc được ghi trong [TEAM.md](../../TEAM.md). Có thêm kiểm thử hồi quy `src/tests/test_shape_trace_privacy.py` cho ba shape; mỗi thành viên cần review phần test tương ứng và commit phần đóng góp của mình. Lịch sử hiện tại chỉ xác minh được commit `a69f265` của Nguyễn Anh Tú; chưa có commit cá nhân của hai thành viên còn lại.
+Phân công theo shape và đầu việc được ghi trong [TEAM.md](../../TEAM.md). Kiểm thử hồi quy `src/tests/test_shape_trace_privacy.py` bao phủ cả ba shape và CP2 selector được kiểm trong `src/tests/test_public_matrix.py`. Lịch sử hiện tại ghi các commit triển khai/tích hợp của Nguyễn Anh Tú; chưa xác minh được commit kỹ thuật riêng của Đăng Thùy Dung hay Trần Thành Vinh.
 
 ## 7. Hạn chế và hướng cải thiện
 

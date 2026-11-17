@@ -13,9 +13,9 @@
 
 ## 3. Đóng góp cụ thể
 
-- Commit `a69f265` chứa phần triển khai ba shape và benchmark/crash evidence; `15f3011` bổ sung trace test/ablation/report; `881536e` hoàn thiện kiểm tra CP4.
+- Commits: `a69f265` triển khai shape/evidence; `96c9dc1` sửa selector CP2; `15f3011` thêm trace test/ablation/report; `881536e` hoàn thiện kiểm tra CP4; `59bf772` lưu metadata CP4.
 - Quyết định kỹ thuật: giữ quyết định tiền trong `compute_compensation` và để `durability.issue_refund` kiểm approval/cap/idempotency; không dùng nội dung ticket làm policy input.
-- Kiểm thử hồi quy mới `src/tests/test_shape_trace_privacy.py` được thêm trong commit `15f3011`.
+- Kiểm thử hồi quy `src/tests/test_shape_trace_privacy.py` được thêm trong `15f3011` và mở rộng CP4 trong `881536e`.
 
 ## 4. Bằng chứng
 
