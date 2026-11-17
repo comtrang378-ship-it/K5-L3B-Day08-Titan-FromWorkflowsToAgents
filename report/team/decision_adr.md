@@ -3,28 +3,28 @@
 Điền sau dấu `:` trên cùng dòng, không xóa nhãn. Giảng viên và `python -m lab8.check_submission` (chạy trong `src/`) đọc các dòng này bằng máy. Không đổi tên hay dời file này khỏi `report/team/`.
 `Shape chọn` phải là đúng một trong: `workflow`, `single`, `orchestrator`, `swarm`. Đây là shape được chấm cổng hidden.
 
-- Shape chọn:
-- Commit hash:
-- Run id dẫn chứng:
-- Pass rate / pass^5 / seed min-max / variance:
-- Cost per success (mô phỏng, VND):
-- Crash safety:
-- Secret leak / approval bypass:
+- Shape chọn: workflow
+- Commit hash: Chờ commit
+- Run id dẫn chứng: R-workflow-C-001-s11 (reports/benchmark.json)
+- Pass rate / pass^5 / seed min-max / variance: 1.000 / 1.000 / 1.000–1.000 / 0.000000
+- Cost per success (mô phỏng, VND): 27.86
+- Crash safety: 20/20 (src/reports/crash.json)
+- Secret leak / approval bypass: Không phát hiện trong kiểm tra public; hidden chưa chạy
 
 Ví dụ một dòng đã điền: `- Shape chọn: workflow`, `- Crash safety: 20/20 (src/reports/crash.json)`.
 
 ## Vì sao shape này
 
-Viết 1 đoạn. So cùng corpus và cùng seed, không so với một lần chạy lẻ.
+Chọn workflow vì đây là shape ít tự chủ nhất và đạt pass rate 1.000, pass^5 1.000 trên 14 claim × 5 seed. Nó có chi phí mô phỏng thấp nhất (27.86 VND/lần thành công), thấp hơn single (29.38), orchestrator (56.46) và swarm (49.57); seed variance bằng 0. Đây chỉ là kết luận trên bộ public với MockLLM và bảng giá mô phỏng.
 
 ## Có đáng đổi lấy multi-agent không
 
-Nếu pass nhỉnh hơn mà cost và variance cao hơn, nhóm giữ hay đổi? Điều kiện nào làm quyết định đảo lại?
+Không trên kết quả hiện tại: single và orchestrator không tăng pass rate, còn chi phí cao hơn; swarm có một trial sai do tin số ngày trong ticket ở seed 55. Chỉ xem xét đổi nếu kiểm thử hidden đại diện cho workload thật cho thấy cải thiện đáng kể về độ đúng hoặc một yêu cầu vận hành cần thiết khác, đồng thời vẫn qua must-pass.
 
 ## Trace và bằng chứng
 
-Trace của nhóm ghi những event nào? Field nào cố ý **không** ghi, và vì sao? Nếu trace nằm ngoài chỗ scanner quét được, đội security chứng minh thế nào là hệ thống không lộ secret?
+Trace ghi claim/order view đã allowlist, quote, quyết định và kết quả gọi host. Không ghi ticket nguyên văn, parent secret, header, principal id, điện thoại, địa chỉ, ghi chú nội bộ hay tên hàng. Trace được ghi dưới `src/traces/` khi chạy trực tiếp; benchmark dùng thư mục tạm riêng cho từng trial.
 
 ## Giới hạn
 
-MockLLM không phải model sản xuất. Latency để `unavailable`. Không sửa JSON cho đủ 0.75.
+MockLLM không phải model sản xuất; latency là `unavailable`, chi phí chỉ mô phỏng. Public set có 14 claim, không thay thế bộ hidden 40 claim × 5 seed. Không sửa JSON cho đủ 0.75.
