@@ -6,14 +6,14 @@
 - Lớp: L3B
 - Thành viên và phân công: xem [TEAM.md](../../TEAM.md).
 - Commits: `a69f265` (shape/public benchmark/crash), `96c9dc1` (CP2 test selector), `15f3011` (privacy test/ablation), `881536e` (CP4 tests), `59bf772` (evidence metadata), `bd8f5a7` (CP0–CP5 report update).
-- CP1 trên workspace này: Python 3.12.10 / Windows; smoke pass; host suite 57 passed; TEAM có thành viên và vai trò. Không thể xác minh smoke trên máy riêng của các thành viên khác.
+- CP1 trên workspace này: Python 3.12.10 / Windows; smoke pass; host suite khi setup 54 passed; TEAM có thành viên và vai trò. Không thể xác minh smoke trên máy riêng của các thành viên khác.
 
 ## Tiến độ theo checkpoint
 
 | CP | Trạng thái | Bằng chứng / giới hạn |
 |---|---|---|
 | CP0 — repo và nhóm | Repo nhóm đã tồn tại, remote GitHub trỏ tới repo Titan, nhánh `main`; thông tin và vai trò có trong TEAM. | Nhóm xác nhận dùng lớp L3B. File hướng dẫn mẫu vẫn ghi L3A; nếu coach yêu cầu áp dụng đúng mẫu thì cần xác nhận quy ước tên repo. |
-| CP1 — cài đặt/contracts | Hoàn tất trên workspace Windows/Python 3.12.10; smoke pass, host suite xanh, business rules/contracts đã được dùng trong triển khai. | Chưa xác minh môi trường trên máy từng thành viên. |
+| CP1 — cài đặt/contracts | Hoàn tất trên workspace Windows/Python 3.12.10; smoke pass, business rules/contracts đã được dùng trong triển khai. Host suite ban đầu 54 passed; hiện là 57 sau khi thêm ba privacy regression cases. | Chưa xác minh môi trường trên máy từng thành viên. |
 | CP2 — ba shape | Hoàn tất; mỗi shape có đúng 62 student tests pass. | Selector `-k single` đã được sửa để chỉ chạy shape single. |
 | CP3 — handoff/ledger/crash | Hoàn tất; ba shape forward `crash_at`, handoff orchestrator dùng allowlist, retry/crash-resume nằm trong student tests. | Demo `lab8.demo.buggy_workflow` in `unsafe refund rows: 2`, minh họa checkpoint đơn lẻ không thay ledger. |
 | CP4 — must-pass | Crash suite 20/20; approval/order-cap và test trace/PII/secret đã chạy. | Không có hidden pack; leak/bypass counts chính thức chỉ giảng viên xác minh được. |
