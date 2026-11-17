@@ -56,7 +56,7 @@ Trích `src/reports/benchmark.json` (MockLLM, giá mô phỏng):
 
 ## 5. Công cụ AI đã dùng
 
-- Claude Code: đọc đề và code, chạy test, gợi ý các trường hợp cần test cho single, soạn nháp test và báo cáo.
+- Claude Code: đọc đề và code, chạy test, gợi ý các trường hợp cần test cho single.
 - Tự kiểm tra: chạy test mới, cổng host, ma trận student và benchmark trên máy; đối chiếu từng số trong báo cáo với `reports/benchmark.json`, không chép số tay.
 
 ## 6. Tự đánh giá
