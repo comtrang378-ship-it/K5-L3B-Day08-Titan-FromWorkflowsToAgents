@@ -4,7 +4,7 @@
 
 - Họ tên: Đăng Thùy Dung
 - MSSV: 2A202604116
-- Email: danhgthuydung1410@gmail.com
+- Email: dangthuydung1410@gmail.com
 - GitHub: [dtdung14](https://github.com/dtdung14)
 
 ## 2. Phần việc phụ trách
