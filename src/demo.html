@@ -86,7 +86,7 @@
 
     .progress > span {
       display: block;
-      width: 14.286%;
+      width: 12.5%;
       height: 100%;
       background: linear-gradient(90deg, var(--cyan), var(--blue));
       transition: width .25s ease;
@@ -197,6 +197,8 @@
     .node.agent { border-color: #287b77; background: #102b35; }
     .node.host { border-color: #8d6a37; background: #302719; }
     .node.ledger { border-color: #427955; background: #172d25; }
+    .usecase-flow { margin: 12px 0; }
+    .usecase-flow .node { min-height: 116px; }
     .arrow { display: grid; place-items: center; color: var(--cyan); font-size: 24px; }
 
     .shape-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 9px; }
@@ -381,7 +383,7 @@
         <div class="brand">LOGIX-VN <span style="color:var(--muted);font-weight:500">/ LAB 8</span></div>
         <div class="top-meta">
           <span class="pill">Demo offline · MockLLM</span>
-          <span id="top-count">01 / 07</span>
+          <span id="top-count">01 / 08</span>
         </div>
       </div>
       <div class="progress"><span id="progress"></span></div>
@@ -453,36 +455,74 @@
 
       <section class="slide" aria-label="Bài toán và quy trình">
         <div class="section-head">
-          <div class="eyebrow">02 · Task &amp; Process</div>
-          <h2>Hoàn claim đúng luật.<br><span class="accent">Không để ticket quyết định tiền.</span></h2>
-          <p>LogiX-VN cần xác định claim có được bồi hoàn phí vận chuyển hay không, tính đúng số tiền theo order và policy, rồi ghi nhận an toàn.</p>
+          <div class="eyebrow">02 · Use case</div>
+          <h2>C-001: trễ 4 ngày.<br><span class="accent">Hoàn đúng 35.000 VND?</span></h2>
+          <p>Cùng một claim, bốn kiến trúc phải đi từ dữ kiện đơn hàng đến cùng một cổng host. Chỉ cách điều phối và lượng model/tool work khác nhau.</p>
+        </div>
+        <div class="architecture usecase-flow" role="img" aria-label="Use case C-001 từ dữ kiện claim đến khoản hoàn trong ledger">
+          <div class="node claim"><strong>1 · Claim C-001</strong><small>Ticket là dữ liệu không tin cậy; không dùng lời ticket làm policy.</small></div>
+          <div class="arrow">→</div>
+          <div class="node agent"><strong>2 · Order + policy</strong><small>O-107: delivered_late, trễ 4 ngày, phí ship 35.000 VND. Clause SHIP-LATE-03.</small></div>
+          <div class="arrow">→</div>
+          <div class="node host"><strong>3 · Quote + host gate</strong><small>Code quote đủ 35.000; host kiểm approval hợp lệ 35.000, cap và idempotency.</small></div>
+          <div class="arrow">→</div>
+          <div class="node ledger"><strong>4 · Ledger</strong><small>Ghi một refund 35.000 VND cùng committed audit.</small></div>
+        </div>
+        <div class="grid-4" style="margin-top:12px">
+          <div class="card">
+            <div class="eyebrow">A · Workflow</div>
+            <h3>Chạy theo recipe</h3>
+            <p class="small">Đọc dữ kiện cần thiết → code tính quote → host kiểm và ghi.</p>
+          </div>
+          <div class="card">
+            <div class="eyebrow">B · Single</div>
+            <h3>Model chọn bước đọc</h3>
+            <p class="small">ReAct chọn read tool, xem kết quả rồi lặp; code vẫn tính quote.</p>
+          </div>
+          <div class="card">
+            <div class="eyebrow">C · Orchestrator</div>
+            <h3>Giao việc investigator</h3>
+            <p class="small">Gom các kết quả đọc độc lập rồi mới quote và gọi host.</p>
+          </div>
+          <div class="card">
+            <div class="eyebrow">D · Swarm</div>
+            <h3>Nhiều agent phối hợp</h3>
+            <p class="small">Nhiều vai agent cùng xử lý; quyền ghi refund vẫn thuộc host.</p>
+          </div>
+        </div>
+        <div class="boundary">Kết quả chung của C-001: quote 35.000 VND; host kiểm approval rồi ghi đúng một refund. Bốn phương pháp khác nhau ở đường đi tới kết quả, không ở luật tính tiền hay quyền ghi.</div>
+      </section>
+
+      <section class="slide" aria-label="Chi phí và thời gian">
+        <div class="section-head">
+          <div class="eyebrow">03 · Cost &amp; Time</div>
+          <h2>Thêm điều phối.<br><span class="accent">Thêm lượt gọi cần trả tiền.</span></h2>
+          <p>So sánh trung bình của 70 trial/shape trên cùng public set. Giá mô phỏng: 10 VND/tool call, 20 VND/1k input tokens và 80 VND/1k output tokens.</p>
         </div>
         <div class="grid-2">
-          <div class="card">
-            <h3>Bài toán cần giải</h3>
-            <p>Với một claim giao hàng trễ, hệ thống phải đối chiếu dữ kiện đơn hàng, điều khoản nghiệp vụ, approval và khoản hoàn trước đó để trả đúng trạng thái và số tiền.</p>
-            <ul class="check-list">
-              <li>Ticket là input không tin cậy; nội dung yêu cầu hay chỉ dẫn trong ticket không thay thế dữ kiện order/policy.</li>
-              <li><code>compute_compensation</code> tính quote theo luật cố định; model không tự quyết định số tiền.</li>
-              <li>Chỉ host được ghi refund sau khi kiểm approval, cap theo order và idempotency.</li>
-            </ul>
-            <div class="boundary">Đầu ra mong đợi: đúng quyết định, không hoàn khi thiếu approval hợp lệ, không ghi trùng và trace không lộ dữ liệu nhạy cảm.</div>
+          <div class="card chart-panel">
+            <div class="chart-title"><strong>Cost / success ↓</strong><span>VND mô phỏng</span></div>
+            <div class="bar-row"><span>Workflow</span><div class="bar-track"><div class="bar" style="width:49.3%"></div></div><span class="bar-value">27.86</span></div>
+            <div class="bar-row"><span>Single</span><div class="bar-track"><div class="bar blue" style="width:52%"></div></div><span class="bar-value">29.38</span></div>
+            <div class="bar-row"><span>Orchestrator</span><div class="bar-track"><div class="bar orange" style="width:100%"></div></div><span class="bar-value">56.46</span></div>
+            <div class="bar-row"><span>Swarm</span><div class="bar-track"><div class="bar orange" style="width:87.8%"></div></div><span class="bar-value">49.57</span></div>
+            <p class="small">Single: 2.71 model calls nhưng tool calls như Workflow nên cost chỉ +5.5%. Orchestrator: 5.57 tools (~55.7 VND/trial trước token), cost ~2.0×. Swarm: 4.66 tools + 3 model calls, cost ~1.8× Workflow.</p>
           </div>
-          <div class="card">
-            <h3>Quy trình chung cho bốn phương pháp</h3>
-            <div class="trace-event"><div class="num">1</div><div><strong>Nhận claim</strong><span>Đọc claim ID và trường đã lọc; giữ nguyên ranh giới với ticket thô.</span></div></div>
-            <div class="trace-event"><div class="num">2</div><div><strong>Thu thập dữ kiện</strong><span>Tra order, policy và lịch sử refund cần thiết qua read tools.</span></div></div>
-            <div class="trace-event"><div class="num">3</div><div><strong>Tính quote</strong><span>Code tính entitlement từ dữ kiện có cấu trúc; quote là số tiền đầy đủ.</span></div></div>
-            <div class="trace-event"><div class="num">4</div><div><strong>Host kiểm và ghi</strong><span><code>issue_refund</code> kiểm approval/cap/idempotency rồi ghi ledger + audit.</span></div></div>
-            <div class="trace-event"><div class="num">5</div><div><strong>Trả kết quả</strong><span>Trả RunResult và trace an toàn để evaluator đối chiếu.</span></div></div>
+          <div class="card chart-panel">
+            <div class="chart-title"><strong>Mean steps ↓</strong><span>event trong trace, không phải giây</span></div>
+            <div class="bar-row"><span>Workflow</span><div class="bar-track"><div class="bar" style="width:80.5%"></div></div><span class="bar-value">3.79</span></div>
+            <div class="bar-row"><span>Single</span><div class="bar-track"><div class="bar blue" style="width:80.5%"></div></div><span class="bar-value">3.79</span></div>
+            <div class="bar-row"><span>Orchestrator</span><div class="bar-track"><div class="bar orange" style="width:100%"></div></div><span class="bar-value">4.71</span></div>
+            <div class="bar-row"><span>Swarm</span><div class="bar-track"><div class="bar" style="width:59.4%"></div></div><span class="bar-value">2.80</span></div>
+            <p class="small">Steps là event trace, không phải giây. Chỉ Orchestrator nhiều steps hơn Workflow; Single bằng, Swarm ít hơn.</p>
           </div>
         </div>
-        <div class="talk-track" style="margin-top:16px"><b>Điểm so sánh:</b> “Bốn shape nhận cùng claim, seed, business rules và evaluator; chúng khác cách điều phối và mức tự chủ, không khác quyền quyết tiền hay quyền ghi ledger.”</div>
+        <div class="boundary"><b>Giới hạn thời gian:</b> Benchmark ghi latency là unavailable. Mean steps là event count, không phải giây; thêm model/tool calls có thể là điểm chờ trong thực tế nhưng chưa được đo ở đây.</div>
       </section>
 
       <section class="slide" aria-label="Live Demo">
         <div class="section-head">
-          <div class="eyebrow">03 · Live Demo</div>
+          <div class="eyebrow">04 · Live Demo</div>
           <h2>Chạy claim C-001<br><span class="accent">từ input đến ledger.</span></h2>
           <p>Ví dụ công khai: order trễ 4 ngày, phí ship 35.000 VND, approval hợp lệ 35.000 VND. Tạo database mới để demo lần đầu.</p>
         </div>
@@ -509,7 +549,7 @@
               <li><code>proposal_amount=35000</code>: quote đầy đủ, không phải tiền sau cap.</li>
               <li><code>refund_effects[0].amount_vnd=35000</code>: effect ghi vào ledger.</li>
               <li><code>idempotency_key=refund:C-001</code>: retry cùng claim không tạo effect thứ hai.</li>
-              <li><code>trace_path</code>: mở file JSON ở phần 04 để xem từng event.</li>
+              <li><code>trace_path</code>: mở file JSON ở phần 05 để xem từng event.</li>
             </ul>
             <div class="boundary">Live output lúc chuẩn bị: cost mô phỏng 30 VND. Benchmark cost/success khác vì tính trung bình trên 70 trial/shape, gồm cả claim cần mức tool khác nhau.</div>
           </div>
@@ -519,7 +559,7 @@
 
       <section class="slide" aria-label="Agent Trace">
         <div class="section-head">
-          <div class="eyebrow">04 · Agent Trace</div>
+          <div class="eyebrow">05 · Agent Trace</div>
           <h2>Bốn event. <span class="accent">Một quyết định có thể audit.</span></h2>
           <p>Trace thật từ run `R-workflow-C-001-s11`. Mở JSON trong `src/traces/` sau khi chạy lệnh live; đoạn bên cạnh là nội dung đã ghi.</p>
         </div>
@@ -568,7 +608,7 @@
 
       <section class="slide" aria-label="Benchmark">
         <div class="section-head">
-          <div class="eyebrow">05 · Benchmark</div>
+          <div class="eyebrow">06 · Benchmark</div>
           <h2>Cùng claims, seed và giá.<br><span class="accent">Đo cả chất lượng lẫn chi phí.</span></h2>
           <p>Cùng 14 public claims × 5 seed (11, 22, 33, 44, 55), cùng evaluator và bảng giá: 70 trial mỗi shape. Giá là VND mô phỏng; latency không đo được.</p>
         </div>
@@ -605,7 +645,7 @@
 
       <section class="slide" aria-label="Reliability and Evaluation">
         <div class="section-head">
-          <div class="eyebrow">06 · Reliability &amp; Evaluation</div>
+          <div class="eyebrow">07 · Reliability &amp; Evaluation</div>
           <h2>Không trả sai. Không ghi trùng.<br><span class="accent">Không lộ dữ liệu.</span></h2>
           <p>Safety không dựa vào lời hứa của agent: host là write gate; ledger/audit và scanner/test cung cấp bằng chứng độc lập.</p>
         </div>
@@ -662,7 +702,7 @@
       <div class="nav">
         <button id="prev" aria-label="Slide trước">←</button>
         <div class="dots" id="dots" aria-label="Chọn slide"></div>
-        <span class="slide-count" id="slide-count">01 / 07</span>
+        <span class="slide-count" id="slide-count">01 / 08</span>
         <button id="next" aria-label="Slide tiếp">→</button>
       </div>
       <span class="hint">Titan · K5 · L3B</span>
